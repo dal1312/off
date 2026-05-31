@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
@@ -11,8 +9,8 @@
   <meta name="apple-mobile-web-app-title" content="NPC Translator">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&family=Noto+Sans+Hebrew:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&amp;family=Noto+Sans+Hebrew:wght@400;700&amp;display=swap" rel="stylesheet">
   <!-- Librerie (alcune caricate lazy) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
@@ -50,7 +48,7 @@
       background: var(--bg-dark);
       color: var(--text);
       min-height: 100vh;
-      padding: 1.5rem;
+      padding: 0.75rem 1rem;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       position: relative;
       overflow-x: hidden;
@@ -70,8 +68,8 @@
     }
     main { max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
     h1 {
-      text-align: center; color: white; font-size: 3.5rem; margin-bottom: 1.5rem;
-      font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+      text-align: center; color: white; font-size: 2.6rem; margin-bottom: 0.8rem;
+      font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
       animation: glow 3s ease-in-out infinite alternate;
       position: relative; display: inline-block; left: 50%; transform: translateX(-50%);
       white-space: nowrap;
@@ -81,7 +79,7 @@
       color: var(--primary); opacity: 0.3; filter: blur(8px); z-index: -1;
     }
     h1 i { color: var(--primary); margin: 0 0.5rem; font-size: 3rem; animation: float 3s ease-in-out infinite; }
-    .badge-container { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
+    .badge-container { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
     .badge {
       background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(168,85,247,0.2));
       border: 1px solid var(--primary); color: var(--text); padding: 0.5rem 1.2rem; border-radius: 30px;
@@ -90,9 +88,73 @@
     .badge:hover { transform: translateY(-2px); box-shadow: 0 5px 20px var(--primary-glow); background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(168,85,247,0.3)); }
     .badge i { margin-right: 0.5rem; color: var(--primary); }
     .language-selector {
-      display: flex; gap: 1rem; justify-content: center; align-items: center; flex-wrap: wrap; margin-bottom: 2rem;
-      background: var(--bg-surface); padding: 1.5rem; border-radius: 60px; border: 1px solid var(--border);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex; 
+      gap: 0.3rem; 
+      justify-content: flex-start; 
+      align-items: center; 
+      flex-wrap: wrap;           /* Permette di andare a capo se necessario */
+      margin-bottom: 0.4rem;
+      background: var(--bg-surface); 
+      padding: 0.4rem 0.55rem; 
+      border-radius: 22px; 
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* View controls (tema + immersivo) nella barra lingue */
+    .view-controls {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      margin-left: 0.5rem;
+      padding-left: 0.5rem;
+      border-left: 1px solid var(--border);
+    }
+
+    .view-controls button {
+      background: var(--bg-surface-light);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem 0.55rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.15s ease;
+    }
+
+    .view-controls button:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Drop zone compatto quando è nella riga delle lingue */
+    .language-selector .drop-zone {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.3rem 0.55rem;
+      margin: 0 0.15rem;
+      border-radius: 16px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      border-width: 1px;
+      cursor: pointer;
+      background: rgba(168, 85, 247, 0.08);
+    }
+
+    .language-selector .drop-zone i {
+      font-size: 0.95rem;
+      margin-bottom: 0;
+      color: var(--primary);
+    }
+
+    .language-selector .drop-zone span {
+      font-size: 0.72rem;
+    }
+
+    .language-selector .drop-zone .file-info {
+      display: none;
     }
     select {
       background: var(--bg-surface-light); color: var(--text); border: 1px solid var(--border); padding: 0.8rem 2rem;
@@ -111,26 +173,178 @@
       background: var(--bg-surface-light); border: 1px solid var(--border); color: var(--text);
       padding: 0.8rem 1.2rem; border-radius: 30px; font-size: 1rem; cursor: pointer;
     }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.6rem; }
+
+    .side-panels {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .panel {
+      flex: 1;
+      min-width: 240px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.7rem;
+      transition: border-color 0.2s ease;
+    }
+
+    .panel:hover {
+      border-color: var(--primary);
+    }
+
+    .panel h3 {
+      margin: 0 0 0.35rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .panel-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 0.12rem 0.4rem;
+      border-radius: 5px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      margin-left: 0.15rem;
+      float: right;
+      transition: all 0.15s ease;
+    }
+
+    .panel-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .panel-list {
+      max-height: 155px;
+      overflow-y: auto;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-surface-light);
+      font-size: 0.8rem;
+    }
     .textarea-wrapper { position: relative; display: flex; flex-direction: column; }
     textarea {
-      min-height: 450px; background: var(--bg-surface); border: 1px solid var(--border); color: var(--text);
-      padding: 1.5rem; border-radius: 20px; font-size: 1rem; line-height: 1.6; resize: vertical; transition: all 0.3s ease;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3); backdrop-filter: blur(10px); -webkit-appearance: none;
+      min-height: 320px; background: var(--bg-surface); border: 1px solid var(--border); color: var(--text);
+      padding: 0.9rem; border-radius: 14px; font-size: 0.95rem; line-height: 1.5; resize: vertical; transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25); backdrop-filter: blur(8px); -webkit-appearance: none;
       width: 100%; box-sizing: border-box;
     }
     textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 30px var(--primary-glow); transform: translateY(-2px); }
     textarea::placeholder { color: var(--text-dim); opacity: 0.5; }
+
+    /* Pulsanti sotto le textarea - coerenti con il design generale */
+    .textarea-actions {
+      gap: 0.35rem;
+      margin-top: 0.3rem;
+    }
+    .textarea-actions button {
+      padding: 0.3rem 0.65rem;
+      font-size: 0.78rem;
+      border-radius: 6px;
+      background: var(--bg-surface-light);
+      border: 1px solid var(--border);
+      color: var(--text);
+      transition: all 0.15s ease;
+    }
+    .textarea-actions button:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .textarea-actions button i {
+      font-size: 0.85rem;
+      margin-right: 0.2rem;
+    }
     #output { background: linear-gradient(135deg, var(--bg-surface), #1a1a2a); }
     .light-theme #output { background: linear-gradient(135deg, #ffffff, #f0f0ff); }
     .char-counter { text-align: right; font-size: 0.8rem; color: var(--text-dim); margin-top: 0.2rem; margin-right: 0.5rem; }
     .warning { color: #fbbf24; font-size: 0.85rem; margin-top: 0.2rem; text-align: right; }
-    .action-bar { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin: 2rem 0; }
+
+    /* ============================================
+       NUOVA ARCHITETTURA LAYOUT (Post pulizia)
+       ============================================ */
+
+    /* Azioni principali nella barra superiore - solo icone */
+    .top-actions {
+      display: flex;
+      gap: 0.2rem;
+      align-items: center;
+      margin-left: 0.25rem;
+      padding-left: 0.3rem;
+      border-left: 1px solid var(--border);
+    }
+
+    .top-actions > button,
+    .top-actions .dropdown-btn {
+      padding: 0.38rem 0.55rem;
+      font-size: 1.05rem;          /* Icona più visibile */
+      border-radius: 6px;
+      background: var(--bg-surface-light);
+      border: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      min-width: 32px;
+      min-height: 32px;
+    }
+
+    .top-actions > button:hover,
+    .top-actions .dropdown-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Tooltip personalizzati per pulsanti icona */
+    .top-actions button[title]:hover::after,
+    .top-actions .dropdown-btn[title]:hover::after,
+    .view-controls button[title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a2a;
+      color: #fff;
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 9999;
+      pointer-events: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    /* Stile base pulsanti - più compatto e moderno */
     button {
-      background: linear-gradient(135deg, var(--secondary), var(--primary)); border: none; color: white;
-      padding: 1rem 2rem; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 0.8rem; transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(124,58,237,0.3); position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent;
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+      border: none;
+      color: white;
+      padding: 0.55rem 1rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
     }
     button::before {
       content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
@@ -151,7 +365,7 @@
     }
     .drop-zone {
       border: 2px dashed var(--primary); background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(168,85,247,0.1));
-      padding: 3rem; text-align: center; border-radius: 30px; cursor: pointer; margin: 2rem 0; transition: all 0.3s ease;
+      padding: 0.7rem; text-align: center; border-radius: 12px; cursor: pointer; margin: 0.4rem 0; transition: all 0.3s ease;
       backdrop-filter: blur(5px); position: relative; overflow: hidden;
     }
     .drop-zone::before {
@@ -163,8 +377,8 @@
       border-color: var(--secondary); background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(168,85,247,0.2));
       transform: scale(1.02); box-shadow: 0 0 40px var(--primary-glow);
     }
-    .drop-zone i { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; display: block; }
-    .drop-zone span { font-size: 1.2rem; color: var(--text-dim); }
+    .drop-zone i { font-size: 1.8rem; color: var(--primary); margin-bottom: 0.4rem; display: block; }
+    .drop-zone span { font-size: 0.9rem; color: var(--text-dim); }
     #progress { height: 8px; background: var(--bg-surface-light); border-radius: 10px; overflow: hidden; margin: 2rem 0 1rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
     #bar {
       height: 100%; width: 0%; background: linear-gradient(90deg, var(--secondary), var(--primary), #d946ef);
@@ -178,29 +392,177 @@
       margin-top: 1rem; backdrop-filter: blur(5px);
     }
     .status i { color: var(--primary); margin-right: 0.5rem; }
+
+    .offline-banner {
+      text-align: center;
+      background: #3f2a1f;
+      color: #fbbf24;
+      border: 1px solid #854d0e;
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+      margin: 0 auto 1rem;
+      max-width: 720px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .light-theme .offline-banner {
+      background: #fef3c7;
+      color: #854d0e;
+      border-color: #fcd34d;
+    }
     .file-info { margin-top: 1rem; padding: 0.8rem; background: rgba(168,85,247,0.1); border-radius: 20px; font-size: 0.9rem; color: var(--text-dim); display: inline-block; }
+    /* Pannelli laterali - design moderno e compatto */
+    .panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.65rem 0.75rem;
+    }
+
+    .panel h3 {
+      margin: 0 0 0.35rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
     #historyList, #glossaryList {
-      max-height: 200px; overflow-y: auto; list-style: none; padding: 0;
-      border: 1px solid var(--border); border-radius: 8px; background: var(--bg-surface-light);
+      max-height: 170px;
+      overflow-y: auto;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-surface-light);
+      font-size: 0.82rem;
     }
+
     #historyList li, #glossaryList li {
-      padding: 0.5rem; border-bottom: 1px solid var(--border); cursor: pointer;
+      padding: 0.38rem 0.55rem;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 0.82rem;
+      transition: background 0.15s ease, color 0.15s ease;
     }
+
     #historyList li:hover, #glossaryList li:hover {
-      background: var(--primary); color: white;
+      background: var(--primary);
+      color: white;
     }
-    /* Nuovi stili per controlli aggiuntivi */
-    .checkbox-group { display: flex; gap: 1rem; justify-content: center; margin: 0.5rem 0; flex-wrap: wrap; align-items: center; }
-    .checkbox-group label { display: flex; align-items: center; gap: 0.3rem; cursor: pointer; }
-    #voiceSelect { background: var(--bg-surface-light); color: var(--text); border: 1px solid var(--border); border-radius: 20px; padding: 0.3rem 0.8rem; }
-    .slider-group { display: flex; align-items: center; gap: 0.5rem; }
-    .slider-group input { width: 80px; }
-    #stats { font-size: 0.8rem; color: var(--text-dim); margin-left: 1rem; }
+
+    #historyList li:last-child,
+    #glossaryList li:last-child {
+      border-bottom: none;
+    }
+    /* Controlli e impostazioni - più compatti */
+    .checkbox-group {
+      display: flex;
+      gap: 0.4rem;
+      justify-content: flex-start;
+      margin: 0.25rem 0;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      cursor: pointer;
+      font-size: 0.82rem;
+    }
+
+    #voiceSelect {
+      background: var(--bg-surface-light);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+      min-width: 140px;
+    }
+
+    .slider-group {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+    }
+
+    .slider-group input {
+      width: 70px;
+    }
+
+    #stats {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-left: 0.5rem;
+    }
     #historySearch { background: var(--bg-surface-light); border: 1px solid var(--border); color: var(--text); border-radius: 20px; padding: 0.3rem 1rem; width: 100%; margin-bottom: 0.5rem; }
     dialog { background: var(--bg-surface); color: var(--text); border: 1px solid var(--primary); border-radius: 20px; padding: 1.5rem; max-width: 400px; }
     dialog::backdrop { background: rgba(0,0,0,0.7); }
     .glossary-edit input { width: 100%; margin-bottom: 0.5rem; background: var(--bg-surface-light); border: 1px solid var(--border); color: var(--text); padding: 0.5rem; border-radius: 8px; }
-    .immersive-mode .badge-container, .immersive-mode .language-selector, .immersive-mode .action-bar, .immersive-mode .drop-zone, .immersive-mode #progress, .immersive-mode .status, .immersive-mode [style*="display: flex; gap: 1rem; margin-top: 2rem;"] { display: none !important; }
+    .immersive-mode .badge-container, 
+    .immersive-mode .language-selector, 
+    .immersive-mode .action-bar, 
+    .immersive-mode .drop-zone, 
+    .immersive-mode #progress, 
+    .immersive-mode .status, 
+    .immersive-mode .side-panels { 
+      display: none !important; 
+    }
+
+    /* Stile base del pulsante Immersive (sempre visibile) */
+    #immersiveToggle {
+      background: var(--bg-surface-light);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #immersiveToggle:hover {
+      background: var(--bg-surface);
+    }
+
+    /* In modalità immersiva diventa floating e più visibile */
+    .immersive-mode #immersiveToggle {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 99999;
+      background: var(--bg-surface);
+      border: 1px solid var(--primary);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      color: var(--primary);
+    }
+
+    .immersive-mode #immersiveToggle {
+      display: inline-flex !important;
+      position: fixed !important;
+      top: 12px;
+      right: 12px;
+      z-index: 99999;
+      background: var(--bg-surface);
+      border: 1px solid var(--primary);
+      padding: 0.5rem 0.7rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      font-size: 1.2rem;
+      margin-left: 0;
+      color: var(--primary);
+    }
     .immersive-mode .grid { grid-template-columns: 1fr; }
     .immersive-mode main { max-width: 800px; }
     #autoSaveIndicator { font-size: 0.7rem; color: var(--text-dim); margin-left: 0.5rem; }
@@ -212,13 +574,18 @@
       display: none;
       position: absolute;
       background: var(--bg-surface);
-      min-width: 160px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      min-width: 180px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.35);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      z-index: 1;
+      border-radius: 12px;
+      z-index: 50;
       bottom: 100%;
       left: 0;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    .dropdown.open .dropdown-content {
+      display: block;
     }
     .dropdown-content button {
       width: 100%;
@@ -226,31 +593,48 @@
       background: transparent;
       border: none;
       color: var(--text);
-      padding: 0.5rem 1rem;
+      padding: 0.4rem 0.8rem;
       border-radius: 0;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
     .dropdown-content button:hover {
       background: var(--primary);
       color: white;
     }
-    .dropdown:hover .dropdown-content {
-      display: block;
+    .dropdown-content button:active {
+      background: var(--secondary);
     }
+    .caret { font-size: 0.7em; margin-left: 0.2rem; }
 
     /* MEDIA QUERY PER MOBILE (OTTIMIZZATE) */
     @media (max-width: 768px) {
-      body { padding: 0.8rem; }
-      h1 { font-size: 2.2rem; white-space: normal; }
-      h1 i { font-size: 2rem; }
-      .badge-container { gap: 0.4rem; margin-bottom: 1rem; }
-      .badge { padding: 0.3rem 0.8rem; font-size: 0.7rem; }
+      body { padding: 0.5rem 0.6rem; }
+      h1 { font-size: 2rem; white-space: normal; margin-bottom: 0.4rem; }
+      h1 i { font-size: 1.7rem; }
+      .badge-container { gap: 0.3rem; margin-bottom: 0.6rem; }
+      .badge { padding: 0.2rem 0.6rem; font-size: 0.65rem; }
       .language-selector {
         flex-direction: column;
         align-items: stretch;
-        padding: 1rem;
-        border-radius: 30px;
-        gap: 0.8rem;
-        margin-bottom: 1rem;
+        padding: 0.5rem;
+        border-radius: 20px;
+        gap: 0.4rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .view-controls {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 0.3rem;
+        gap: 0.3rem;
+      }
+      .view-controls button {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.9rem;
       }
       .language-selector select {
         min-width: auto;
@@ -264,40 +648,54 @@
         font-size: 1.2rem;
         align-self: center;
       }
-      .grid { grid-template-columns: 1fr; gap: 1rem; }
-      textarea { min-height: 300px; padding: 1rem; font-size: 0.9rem; }
-      .action-bar {
-        flex-direction: column;
-        gap: 0.6rem;
-        margin: 1rem 0;
-      }
-      .action-bar button {
+      .grid { grid-template-columns: 1fr; gap: 0.5rem; }
+      textarea { min-height: 240px; padding: 0.6rem; font-size: 0.9rem; }
+      .top-actions {
+        margin-left: 0;
+        padding-left: 0.25rem;
+        border-left: none;
         width: 100%;
-        padding: 0.8rem 1rem;
-        font-size: 0.9rem;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        margin-top: 0.25rem;
+        justify-content: flex-start;
+      }
+
+      .top-actions > button,
+      .top-actions .dropdown-btn {
+        flex: 0 0 auto;
+        min-width: 32px;
+        min-height: 32px;
+        padding: 0.3rem 0.45rem;
+        font-size: 1rem;
         justify-content: center;
       }
       .checkbox-group {
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.5rem;
-        margin: 0.5rem 0;
+        gap: 0.35rem;
+        margin: 0.3rem 0;
       }
-      .checkbox-group label { font-size: 0.9rem; }
-      .slider-group { width: 100%; }
+      .checkbox-group label { font-size: 0.8rem; }
+      .slider-group {
+        width: 100%;
+        font-size: 0.76rem;
+      }
       .slider-group input { width: 100%; }
-      #voiceSelect { width: 100%; }
+      #voiceSelect {
+        width: 100%;
+        min-width: auto;
+        font-size: 0.76rem;
+      }
       .dropdown { width: 100%; }
       .dropdown-content { bottom: auto; top: 100%; width: 100%; }
       #stats { margin-left: 0; font-size: 0.8rem; }
-      .drop-zone { padding: 1.5rem; margin: 1rem 0; }
-      .drop-zone i { font-size: 2rem; }
-      .drop-zone span { font-size: 0.9rem; }
-      #historyList, #glossaryList { max-height: 150px; }
-      [style*="display: flex; gap: 1rem; margin-top: 2rem;"] {
-        flex-direction: column;
-        gap: 0.8rem;
-      }
+      .drop-zone { padding: 0.5rem; margin: 0.3rem 0; }
+      .drop-zone i { font-size: 1.4rem; }
+      .drop-zone span { font-size: 0.75rem; }
+      #historyList, #glossaryList { max-height: 140px; font-size: 0.78rem; }
+      .side-panels { flex-direction: column; gap: 0.5rem; }
+      .panel { min-width: 100%; padding: 0.5rem 0.6rem; }
       #stats, #autoSaveIndicator { display: none; }
     }
 
@@ -309,9 +707,16 @@
       textarea { min-height: 250px; }
       .language-selector select { font-size: 0.8rem; padding: 0.6rem 1rem; }
       button { padding: 0.6rem 0.8rem; font-size: 0.8rem; }
-      .drop-zone { padding: 1rem; }
-      .checkbox-group label { font-size: 0.8rem; }
-      .slider-group label { font-size: 0.8rem; }
+      .drop-zone { padding: 0.35rem; }
+      .drop-zone i { font-size: 1rem; margin-bottom: 0.15rem; }
+      .drop-zone span { font-size: 0.68rem; }
+      .checkbox-group label { font-size: 0.76rem; }
+      .slider-group label { font-size: 0.74rem; }
+
+      .textarea-actions button {
+        padding: 0.18rem 0.45rem;
+        font-size: 0.65rem;
+      }
     }
   </style>
 </head>
@@ -328,8 +733,13 @@
     <span class="badge"><i class="fas fa-wifi-slash"></i> Offline (sim)</span>
   </div>
 
-  <div class="language-selector">
-    <select id="from">
+  <!-- Offline banner -->
+  <div id="offlineBanner" class="offline-banner" style="display: none;">
+    <i class="fas fa-wifi-slash"></i> <strong>Offline</strong> — La traduzione usa API online. Connettiti per tradurre.
+  </div>
+
+  <div class="language-selector" role="group" aria-label="Selezione lingue">
+    <select id="from" aria-label="Lingua di origine">
       <option value="auto">🌐 Auto (rileva)</option>
       <option value="en">🇬🇧 Inglese</option>
       <option value="it">🇮🇹 Italiano</option>
@@ -345,9 +755,9 @@
       <option value="zh-CN">🇨🇳 Cinese</option>
       <option value="ja">🇯🇵 Giapponese</option>
     </select>
-    <button id="swap"><i class="fas fa-exchange-alt"></i></button>
-    <select id="to">
-      <option value="it" selected>🇮🇹 Italiano</option>
+    <button id="swap" aria-label="Scambia lingue e testo"><i class="fas fa-exchange-alt"></i></button>
+    <select id="to" aria-label="Lingua di destinazione">
+      <option value="it" selected="">🇮🇹 Italiano</option>
       <option value="en">🇬🇧 Inglese</option>
       <option value="la">🏛️ Latino</option>
       <option value="yi">📜 Yiddish</option>
@@ -361,15 +771,58 @@
       <option value="zh-CN">🇨🇳 Cinese</option>
       <option value="ja">🇯🇵 Giapponese</option>
     </select>
-    <button id="themeToggle" title="Cambia tema"><i class="fas fa-sun"></i></button>
-    <button id="immersiveToggle" title="Modalità immersiva"><i class="fas fa-expand"></i></button>
+    <!-- Drop zone compatto a fianco di "Rileva lingue" -->
+    <div class="drop-zone" id="drop">
+      <i class="fas fa-cloud-upload-alt"></i>
+      <span>Trascina file</span>
+      <input type="file" id="file" accept=".pdf,.epub,.txt,.docx,image/*" multiple="" hidden="">
+      <div class="file-info" id="fileInfo"></div>
+    </div>
+
+    <!-- Pulsanti azione spostati nella stessa riga delle lingue -->
+    <!-- Controlli vista (solo Tema nella barra) -->
+    <div class="view-controls">
+      <button id="themeToggle" title="Cambia tema"><i class="fas fa-sun"></i></button>
+    </div>
+
+    <!-- Azioni principali nella barra superiore - solo icone + tooltip -->
+    <div class="top-actions">
+      <button id="translate" title="" aria-label="Traduci">
+        <i class="fas fa-play"></i>
+      </button>
+
+      <div class="dropdown" id="exportDropdown">
+        <button id="downloadBtn" class="dropdown-btn" title="Esporta">
+          <i class="fas fa-download"></i>
+        </button>
+        <div class="dropdown-content" role="menu">
+          <button id="downloadTxt" role="menuitem"><i class="fas fa-file-alt"></i> Testo (TXT)</button>
+          <button id="downloadPdf" role="menuitem"><i class="fas fa-file-pdf"></i> PDF</button>
+          <button id="downloadDocx" role="menuitem"><i class="fas fa-file-word"></i> DOCX</button>
+          <button id="downloadEpub" role="menuitem"><i class="fas fa-book"></i> EPUB</button>
+        </div>
+      </div>
+
+      <button id="clear" title="Pulisci" aria-label="Pulisci">
+        <i class="fas fa-eraser"></i>
+      </button>
+
+      <button id="batchBtn" title="Traduci più file e scarica ZIP">
+        <i class="fas fa-layer-group"></i>
+      </button>
+    </div>
   </div>
+
+  <!-- Pulsante Schermo Intero FUORI dalla language-selector 
+       così rimane visibile anche in modalità immersiva -->
+  <button id="immersiveToggle" title="Modalità immersiva"><i class="fas fa-expand"></i></button>
 
   <div class="checkbox-group">
     <label><input type="checkbox" id="liveTranslate"> 🔄 Traduci in tempo reale</label>
     <label><input type="checkbox" id="autoFileTranslate"> 📂 Traduci subito dopo caricamento file</label>
     <label><input type="checkbox" id="preserveFormatting"> 🎨 Preserva formattazione (sperimentale)</label>
-    <select id="voiceSelect" title="Voce per sintesi"></select>
+    <label><input type="checkbox" id="bookMode"> 📖 Modalità Libro (migliore coerenza su testi lunghi)</label>
+    <select id="voiceSelect" title="Voce per sintesi"><option value="Microsoft Cosimo - Italian (Italy)">Microsoft Cosimo - Italian (Italy) (it-IT)</option><option value="Microsoft Mark - English (United States)">Microsoft Mark - English (United States) (en-US)</option><option value="Microsoft Zira - English (United States)">Microsoft Zira - English (United States) (en-US)</option><option value="Microsoft David - English (United States)">Microsoft David - English (United States) (en-US)</option><option value="Microsoft Elsa - Italian (Italy)">Microsoft Elsa - Italian (Italy) (it-IT)</option><option value="Microsoft Elsa Desktop - Italian (Italy)">Microsoft Elsa Desktop - Italian (Italy) (it-IT)</option><option value="Microsoft Zira Desktop - English (United States)">Microsoft Zira Desktop - English (United States) (en-US)</option><option value="Microsoft David Desktop - English (United States)">Microsoft David Desktop - English (United States) (en-US)</option></select>
     <div class="slider-group">
       <label>⚡ Velocità</label>
       <input type="range" id="rateSlider" min="0.5" max="2" step="0.1" value="1">
@@ -379,78 +832,64 @@
       <input type="range" id="pitchSlider" min="0.5" max="2" step="0.1" value="1">
     </div>
     <button id="shareBtn" title="Condividi traduzione" style="background:none; border:none; color:var(--primary);"><i class="fas fa-share-alt"></i></button>
-    <span id="stats"></span>
+    <span id="stats">📊 Parole tradotte: 4762</span>
     <span id="autoSaveIndicator"></span>
   </div>
 
   <div class="grid">
     <div class="textarea-wrapper">
-      <textarea id="input" placeholder="📝 Incolla testo, parla, trascina file o immagini..."></textarea>
-      <div class="char-counter" id="inputCounter">0 · 0</div>
+      <textarea id="input" aria-label="Testo da tradurre" placeholder="📝 Incolla testo, parla, trascina file o immagini..."></textarea>
+      <div class="char-counter" id="inputCounter">2134 caratteri · 195 parole</div>
       <div id="inputWarning" class="warning"></div>
-      <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-        <button id="voiceBtn" title="Dettatura"><i class="fas fa-microphone"></i> Dettatura</button>
-        <button id="ocrBtn" title="OCR da immagine"><i class="fas fa-image"></i> OCR</button>
+      <div class="textarea-actions" style="display: flex; gap: 0.3rem; margin-top: 0.3rem; flex-wrap: wrap;">
+        <button id="voiceBtn" aria-label="Dettatura vocale" title="Dettatura vocale"><i class="fas fa-microphone"></i> Dettatura</button>
+        <button id="ocrBtn" aria-label="OCR da immagine" title="OCR da immagine"><i class="fas fa-image"></i> OCR</button>
+        <button id="pasteBtn" aria-label="Incolla dagli appunti" title="Incolla dagli appunti"><i class="fas fa-paste"></i> Incolla</button>
+        <button id="speakInputBtn" title="Ascolta testo originale" aria-label="Ascolta testo originale"><i class="fas fa-volume-up"></i></button>
+        <button id="stopSpeakInputBtn" title="Ferma audio" aria-label="Ferma audio"><i class="fas fa-stop"></i></button>
+        <button id="clearInputBtn" aria-label="Pulisci area input" title="Pulisci input" style="background:var(--bg-surface-light);border:1px solid var(--border);color:var(--text-dim);padding:0.25rem 0.5rem;font-size:0.75rem;">✕</button>
       </div>
     </div>
     <div class="textarea-wrapper">
-      <textarea id="output" readonly placeholder="✨ Traduzione..."></textarea>
-      <div class="char-counter" id="outputCounter">0 · 0</div>
-      <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-        <button id="speakBtn" title="Ascolta traduzione"><i class="fas fa-volume-up"></i> Ascolta</button>
-        <button id="stopSpeakBtn" title="Interrompi audio"><i class="fas fa-stop"></i> Stop</button>
-        <button id="copy"><i class="fas fa-copy"></i> Copia</button>
+      <textarea id="output" readonly="" aria-label="Testo tradotto" placeholder="✨ Traduzione..."></textarea>
+      <div class="char-counter" id="outputCounter">0 caratteri · 0 parole</div>
+      <div class="textarea-actions" style="display: flex; gap: 0.3rem; margin-top: 0.3rem; flex-wrap: wrap;">
+        <button id="speakBtn" aria-label="Ascolta traduzione con sintesi vocale" title="Ascolta traduzione"><i class="fas fa-volume-up"></i> Ascolta</button>
+        <button id="stopSpeakBtn" aria-label="Ferma riproduzione audio" title="Interrompi audio"><i class="fas fa-stop"></i> Stop</button>
+        <button id="copy" aria-label="Copia traduzione negli appunti"><i class="fas fa-copy"></i> Copia</button>
+        <button id="clearOutputBtn" aria-label="Pulisci area output" title="Pulisci output" style="background:var(--bg-surface-light);border:1px solid var(--border);color:var(--text-dim);padding:0.25rem 0.5rem;font-size:0.75rem;">✕</button>
       </div>
     </div>
   </div>
 
   <div class="action-bar">
-    <button id="translate"><i class="fas fa-play"></i> Traduci</button>
-    <button id="abort" style="display: none;"><i class="fas fa-stop"></i> Annulla</button>
-    
-    <!-- Dropdown per esportazione -->
-    <div class="dropdown">
-      <button id="downloadBtn" class="dropdown-btn"><i class="fas fa-download"></i> Esporta ▼</button>
-      <div class="dropdown-content">
-        <button id="downloadTxt"><i class="fas fa-file-alt"></i> Testo (TXT)</button>
-        <button id="downloadPdf"><i class="fas fa-file-pdf"></i> PDF</button>
-        <button id="downloadDocx"><i class="fas fa-file-word"></i> DOCX</button>
-        <button id="downloadEpub"><i class="fas fa-book"></i> EPUB</button>
-      </div>
-    </div>
-
-    <button id="clear"><i class="fas fa-eraser"></i> Pulisci</button>
-    <button id="batchBtn" title="Traduci più file e scarica ZIP"><i class="fas fa-layer-group"></i> Batch</button>
-  </div>
-
-  <div class="drop-zone" id="drop">
-    <i class="fas fa-cloud-upload-alt"></i>
-    <span>Trascina file (PDF, EPUB, DOCX, TXT, IMMAGINI) o cartelle</span>
-    <input type="file" id="file" accept=".pdf,.epub,.txt,.docx,image/*" multiple hidden>
-    <div class="file-info" id="fileInfo"></div>
+    <!-- Abort diventa solo icona quando appare -->
+    <button id="abort" style="display: none;" title="Annulla traduzione" aria-label="Annulla traduzione in corso">
+      <i class="fas fa-stop"></i>
+    </button>
   </div>
 
   <div id="progress"><div id="bar"></div></div>
   <div class="status" id="status"><i class="fas fa-check-circle"></i> Sistema pronto</div>
 
   <!-- Pannelli laterali migliorati -->
-  <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
-    <div style="flex:1; background: var(--bg-surface); border-radius: 12px; padding: 1rem;">
+  <div class="side-panels">
+    <div class="panel">
       <h3><i class="fas fa-history"></i> Cronologia 
-        <button id="clearHistory" style="float:right; padding:0.2rem 0.5rem;">🗑️</button>
-        <button id="exportHistory" style="float:right; margin-right:0.3rem;" title="Esporta cronologia"><i class="fas fa-download"></i></button>
-        <button id="importHistory" style="float:right; margin-right:0.3rem;" title="Importa cronologia"><i class="fas fa-upload"></i></button>
+        <button id="clearHistory" class="panel-btn" title="Cancella cronologia">🗑️</button>
+        <button id="exportHistory" class="panel-btn" title="Esporta cronologia"><i class="fas fa-download"></i></button>
+        <button id="importHistory" class="panel-btn" title="Importa cronologia"><i class="fas fa-upload"></i></button>
       </h3>
       <input type="text" id="historySearch" placeholder="🔍 Cerca nella cronologia...">
-      <ul id="historyList" style="max-height: 200px; overflow-y: auto; list-style: none; padding:0;"></ul>
+      <ul id="historyList" class="panel-list"></ul>
     </div>
-    <div style="flex:1; background: var(--bg-surface); border-radius: 12px; padding: 1rem;">
+    <div class="panel">
       <h3><i class="fas fa-book"></i> Glossario 
-        <button id="addGlossary" style="float:right;">➕</button>
-        <button id="exportGlossary" style="float:right; margin-right:0.3rem;" title="Esporta glossario"><i class="fas fa-download"></i></button>
-        <button id="importGlossary" style="float:right; margin-right:0.3rem;" title="Importa glossario"><i class="fas fa-upload"></i></button>
+        <button id="addGlossary" class="panel-btn" title="Aggiungi voce glossario">➕</button>
+        <button id="exportGlossary" class="panel-btn" title="Esporta glossario"><i class="fas fa-download"></i></button>
+        <button id="importGlossary" class="panel-btn" title="Importa glossario"><i class="fas fa-upload"></i></button>
       </h3>
-      <ul id="glossaryList" style="max-height: 200px; overflow-y: auto; list-style: none; padding:0;"></ul>
+      <ul id="glossaryList" class="panel-list"></ul>
     </div>
   </div>
 </main>
@@ -469,53 +908,112 @@
   import * as pdfjs from 'pdfjs-dist';
   pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.mjs';
 
-  // ---------- ELEMENTI DOM ----------
+  /**
+   * NPC Translator — Serious Development Mode
+   *
+   * Current Priorities (1-2-3-4, no bilingual output):
+   * 1. Architecture & Cleanup (solid foundations)
+   * 2. Chapter detection + per-chapter translation
+   * 3. Dialogue formatting preservation
+   * 4. Export quality improvements (EPUB, DOCX, PDF, TXT)
+   *
+   * Design principles:
+   * - Stay as close as possible to single-file for ease of use
+   * - Clear code organization and comments
+   * - Focus on narrative books and dialogue-heavy content
+   */
+
+  // ============================================
+  // 1. CONFIG & STATE
+  // ============================================
+  const CONFIG = {
+    version: '0.5.0-serious',
+    defaultChunkSize: 1800,
+  };
+
+  let state = {
+    currentBook: null,           // { title, chapters: [...] }
+    isTranslating: false,
+    currentLangPair: { from: 'auto', to: 'it' },
+  };
+
+  // ============================================
+  // 2. DOM REFERENCES
+  // ============================================
+
+  // Main language controls
   const from = document.getElementById('from');
   const to = document.getElementById('to');
+  const swapBtn = document.getElementById('swap');
+
+  // Text areas
   const input = document.getElementById('input');
   const output = document.getElementById('output');
+
+  // Status & progress
   const statusDiv = document.getElementById('status');
   const bar = document.getElementById('bar');
+
+  // File handling
   const fileInput = document.getElementById('file');
   const drop = document.getElementById('drop');
   const fileInfo = document.getElementById('fileInfo');
+
+  // Main action buttons (new clean structure)
   const translateBtn = document.getElementById('translate');
   const abortBtn = document.getElementById('abort');
+  const clearBtn = document.getElementById('clear');
+  const batchBtn = document.getElementById('batchBtn');
+
+  // Export
+  const exportDropdown = document.getElementById('exportDropdown');
+  const downloadBtn = document.getElementById('downloadBtn');
+
+  // View controls
+  const themeToggle = document.getElementById('themeToggle');
+  const immersiveToggle = document.getElementById('immersiveToggle');
+
+  // Input side small buttons
+  const voiceBtn = document.getElementById('voiceBtn');
+  const ocrBtn = document.getElementById('ocrBtn');
+  const pasteBtn = document.getElementById('pasteBtn');
+  const speakInputBtn = document.getElementById('speakInputBtn');
+  const stopSpeakInputBtn = document.getElementById('stopSpeakInputBtn');
+  const clearInputBtn = document.getElementById('clearInputBtn');
+
+  // Output side small buttons
+  const speakBtn = document.getElementById('speakBtn');
+  const stopSpeakBtn = document.getElementById('stopSpeakBtn');
   const copyBtn = document.getElementById('copy');
+  const clearOutputBtn = document.getElementById('clearOutputBtn');
+
+  // Counters & warnings
   const inputCounter = document.getElementById('inputCounter');
   const outputCounter = document.getElementById('outputCounter');
   const inputWarning = document.getElementById('inputWarning');
-  const voiceBtn = document.getElementById('voiceBtn');
-  const speakBtn = document.getElementById('speakBtn');
-  const stopSpeakBtn = document.getElementById('stopSpeakBtn');
-  const ocrBtn = document.getElementById('ocrBtn');
-  const themeToggle = document.getElementById('themeToggle');
-  const batchBtn = document.getElementById('batchBtn');
-  const clearHistoryBtn = document.getElementById('clearHistory');
-  const addGlossaryBtn = document.getElementById('addGlossary');
-  const historyList = document.getElementById('historyList');
-  const glossaryList = document.getElementById('glossaryList');
+
+  // Settings
   const liveTranslate = document.getElementById('liveTranslate');
   const autoFileTranslate = document.getElementById('autoFileTranslate');
   const preserveFormatting = document.getElementById('preserveFormatting');
+  const bookMode = document.getElementById('bookMode');
   const voiceSelect = document.getElementById('voiceSelect');
   const rateSlider = document.getElementById('rateSlider');
   const pitchSlider = document.getElementById('pitchSlider');
-  const shareBtn = document.getElementById('shareBtn');
+
+  // Stats & indicators
   const statsSpan = document.getElementById('stats');
   const autoSaveIndicator = document.getElementById('autoSaveIndicator');
-  const immersiveToggle = document.getElementById('immersiveToggle');
+  const shareBtn = document.getElementById('shareBtn');
+
+  // History
+  const historyList = document.getElementById('historyList');
   const historySearch = document.getElementById('historySearch');
+  const clearHistoryBtn = document.getElementById('clearHistory');
   const exportHistoryBtn = document.getElementById('exportHistory');
   const importHistoryBtn = document.getElementById('importHistory');
-  const exportGlossaryBtn = document.getElementById('exportGlossary');
-  const importGlossaryBtn = document.getElementById('importGlossary');
-  const glossaryDialog = document.getElementById('glossaryDialog');
-  const closeGlossaryDialog = document.getElementById('closeGlossaryDialog');
-  const downloadTxt = document.getElementById('downloadTxt');
-  const downloadPdf = document.getElementById('downloadPdf');
-  const downloadDocx = document.getElementById('downloadDocx');
-  const downloadEpub = document.getElementById('downloadEpub');
+
+  // (All DOM references centralized cleanly above. Duplicate block removed.)
 
   let abortTranslation = false;
   let isTranslating = false;
@@ -531,6 +1029,101 @@
       script.onerror = reject;
       document.head.appendChild(script);
     });
+  }
+
+  // =====================================================
+  // GENERATORE DOCX NATIVO (senza dipendenze esterne)
+  // Usa JSZip (già caricato) per creare un .docx valido
+  // =====================================================
+  async function createDocxBlob(text, meta) {
+    const zip = new JSZip();
+    const escapeXml = (str) => str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;');
+
+    const paragraphs = splitIntoParagraphs(text);
+
+    // 1. [Content_Types].xml
+    zip.file("[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
+</Types>`);
+
+    // 2. _rels/.rels
+    zip.file("_rels/.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`);
+
+    // 3. word/_rels/document.xml.rels
+    zip.file("word/_rels/document.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`);
+
+    // 4. word/styles.xml (base)
+    zip.file("word/styles.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:docDefaults>
+    <w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="Calibri" w:cs="Calibri"/></w:rPr></w:rPrDefault>
+  </w:docDefaults>
+</w:styles>`);
+
+    // 5. word/document.xml (contenuto principale)
+    let bodyXml = '';
+
+    // Titolo
+    bodyXml += `<w:p>
+      <w:pPr><w:jc w:val="center"/></w:pPr>
+      <w:r><w:rPr><w:b/><w:sz w:val="32"/><w:color w:val="6D28D9"/></w:rPr><w:t>${escapeXml(meta.title)}</w:t></w:r>
+    </w:p>`;
+
+    // Meta
+    bodyXml += `<w:p>
+      <w:pPr><w:jc w:val="center"/></w:pPr>
+      <w:r><w:rPr><w:i/><w:sz w:val="20"/><w:color w:val="666666"/></w:rPr>
+      <w:t>${escapeXml(meta.from)} → ${escapeXml(meta.to)}  •  ${escapeXml(meta.date)}</w:t></w:r>
+    </w:p>`;
+
+    bodyXml += `<w:p><w:pPr><w:spacing w:after="200"/></w:pPr></w:p>`;
+
+    // Paragrafi di contenuto
+    paragraphs.forEach(para => {
+      bodyXml += `<w:p>
+        <w:pPr><w:spacing w:after="160"/></w:pPr>
+        <w:r><w:t xml:space="preserve">${escapeXml(para)}</w:t></w:r>
+      </w:p>`;
+    });
+
+    // Nota finale
+    bodyXml += `<w:p><w:pPr><w:spacing w:before="300"/></w:pPr></w:p>`;
+    bodyXml += `<w:p>
+      <w:pPr><w:jc w:val="center"/></w:pPr>
+      <w:r><w:rPr><w:i/><w:sz w:val="18"/><w:color w:val="888888"/></w:rPr>
+      <w:t>— Fine traduzione NPC —</w:t></w:r>
+    </w:p>`;
+
+    const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    ${bodyXml}
+    <w:sectPr>
+      <w:pgSz w:w="11906" w:h="16838"/>
+      <w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134"/>
+    </w:sectPr>
+  </w:body>
+</w:document>`;
+
+    zip.file("word/document.xml", documentXml);
+
+    // Genera il blob
+    return await zip.generateAsync({ type: "blob" });
   }
 
   // ---------- PREFERENZE E TEMA ----------
@@ -550,6 +1143,7 @@
       if (localStorage.getItem('npc_live') === 'true') liveTranslate.checked = true;
       if (localStorage.getItem('npc_autoFile') === 'true') autoFileTranslate.checked = true;
       if (localStorage.getItem('npc_preserve') === 'true') preserveFormatting.checked = true;
+      if (localStorage.getItem('npc_bookMode') === 'true') bookMode.checked = true;
       if (localStorage.getItem('npc_rate')) rateSlider.value = localStorage.getItem('npc_rate');
       if (localStorage.getItem('npc_pitch')) pitchSlider.value = localStorage.getItem('npc_pitch');
     } catch (e) {}
@@ -562,6 +1156,34 @@
   }
   loadPrefs();
 
+  // Inizializza indicatore Modalità Libro
+  const bookModeIndicator = document.getElementById('bookModeIndicator');
+  if (bookModeIndicator && bookMode) {
+    bookModeIndicator.style.display = bookMode.checked ? 'inline' : 'none';
+  }
+
+  // ---------- OFFLINE DETECTION ----------
+  const offlineBanner = document.getElementById('offlineBanner');
+  function updateOnlineStatus() {
+    const isOffline = !navigator.onLine;
+    if (offlineBanner) {
+      offlineBanner.style.display = isOffline ? 'flex' : 'none';
+    }
+    if (translateBtn) {
+      if (isOffline) {
+        translateBtn.style.opacity = '0.6';
+        translateBtn.title = 'Connessione richiesta per la traduzione';
+      } else {
+        translateBtn.style.opacity = '';
+        translateBtn.title = '';
+      }
+    }
+  }
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+  // Initial check
+  setTimeout(updateOnlineStatus, 100);
+
   themeToggle.onclick = () => {
     document.body.classList.toggle('light-theme');
     localStorage.setItem('npc_theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
@@ -569,12 +1191,23 @@
 
   immersiveToggle.onclick = () => {
     document.body.classList.toggle('immersive-mode');
-    immersiveToggle.innerHTML = document.body.classList.contains('immersive-mode') ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+    const isImmersive = document.body.classList.contains('immersive-mode');
+    immersiveToggle.innerHTML = isImmersive 
+      ? '<i class="fas fa-compress"></i>' 
+      : '<i class="fas fa-expand"></i>';
+    immersiveToggle.title = isImmersive ? 'Esci dalla modalità immersiva' : 'Modalità immersiva';
   };
+
+  // Export dropdown logic is attached earlier using centralized variables
 
   rateSlider.addEventListener('input', () => localStorage.setItem('npc_rate', rateSlider.value));
   pitchSlider.addEventListener('input', () => localStorage.setItem('npc_pitch', pitchSlider.value));
   preserveFormatting.addEventListener('change', () => localStorage.setItem('npc_preserve', preserveFormatting.checked));
+  bookMode.addEventListener('change', () => {
+    localStorage.setItem('npc_bookMode', bookMode.checked);
+    const indicator = document.getElementById('bookModeIndicator');
+    if (indicator) indicator.style.display = bookMode.checked ? 'inline' : 'none';
+  });
 
   // ---------- FUNZIONI BASE ----------
   function setStatus(msg, isError = false) {
@@ -647,6 +1280,37 @@
     navigator.clipboard.writeText(output.value).then(() => setStatus("✅ Copiato"));
   };
 
+  // Paste button
+  if (pasteBtn) {
+    pasteBtn.onclick = async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          input.value = (input.value ? input.value + '\n' : '') + text;
+          updateCounters();
+          setStatus("✅ Testo incollato");
+        }
+      } catch (e) {
+        setStatus("❌ Impossibile incollare (permessi?)", true);
+      }
+    };
+  }
+
+  // Small clear buttons
+  if (clearInputBtn) {
+    clearInputBtn.onclick = () => {
+      input.value = '';
+      updateCounters();
+      fileInfo.textContent = '';
+    };
+  }
+  if (clearOutputBtn) {
+    clearOutputBtn.onclick = () => {
+      output.value = '';
+      updateCounters();
+    };
+  }
+
   // ---------- ESPORTAZIONE ----------
   function downloadBlob(blob, filename) {
     const a = document.createElement('a');
@@ -656,10 +1320,277 @@
     URL.revokeObjectURL(a.href);
   }
 
+  // ---------- ESPORTAZIONE: HELPER CONDIVISI (testo ricco) ----------
+  const LANG_LABELS = {
+    'auto': 'Auto', 'en': 'Inglese', 'it': 'Italiano', 'la': 'Latino', 'yi': 'Yiddish',
+    'he': 'Ebraico', 'ar': 'Arabo', 'fr': 'Francese', 'es': 'Spagnolo', 'de': 'Tedesco',
+    'pt': 'Portoghese', 'ru': 'Russo', 'zh-CN': 'Cinese', 'ja': 'Giapponese'
+  };
+
+  function getLangLabel(code) {
+    return LANG_LABELS[code] || code.toUpperCase();
+  }
+
+  function getExportMeta() {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('it-IT') + ' ' + now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+    const fromLabel = getLangLabel(from.value);
+    const toLabel = getLangLabel(to.value);
+    const wordCount = output.value.trim() ? output.value.trim().split(/\s+/).length : 0;
+    const charCount = output.value.length;
+
+    return {
+      title: 'Traduzione NPC',
+      date: dateStr,
+      from: fromLabel,
+      to: toLabel,
+      wordCount,
+      charCount,
+      pair: `${fromLabel} → ${toLabel}`
+    };
+  }
+
+  function splitIntoParagraphs(text) {
+    return text.trim().split(/\n\s*\n+/).filter(p => p.trim().length > 0);
+  }
+
+  function generateSmartFilename(ext, meta) {
+    const lang = (to.value || 'out').replace(/[^a-z0-9]/gi, '');
+    const d = new Date();
+    const stamp = `${d.getFullYear()}${(d.getMonth()+1).toString().padStart(2,'0')}${d.getDate().toString().padStart(2,'0')}`;
+    return `traduzione_npc_${lang}_${stamp}.${ext}`;
+  }
+
+  // ========== ESTRAZIONE CAPITOLI EPUB (per Progetti Libro) ==========
+  async function parseEpubChapters(arrayBuffer) {
+    try {
+      const zip = await JSZip.loadAsync(arrayBuffer);
+      const chapters = [];
+
+      for (const [filename, zipEntry] of Object.entries(zip.files)) {
+        if (!filename.match(/\.(xhtml|html|htm)$/i) || zipEntry.dir) continue;
+
+        try {
+          const content = await zipEntry.async('string');
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(content, 'text/html');
+
+          // Rimuovi elementi non di contenuto
+          doc.querySelectorAll('nav, script, style, header, footer, [role="doc-toc"], [role="navigation"], .toc').forEach(el => el.remove());
+
+          // Prova a trovare un titolo significativo (migliorato per Priority 2)
+          let title = '';
+          const h1 = doc.querySelector('h1, h2, h3');
+          if (h1 && h1.textContent.trim().length > 2 && h1.textContent.trim().length < 120) {
+            title = h1.textContent.trim();
+          } else {
+            const titleEl = doc.querySelector('title');
+            if (titleEl && titleEl.textContent.trim().length > 2 && titleEl.textContent.trim().length < 100) {
+              title = titleEl.textContent.trim();
+            } else {
+              // Fallback dal filename
+              const base = filename.split('/').pop().replace(/\.(xhtml|html|htm)$/i, '');
+              title = base
+                .replace(/chapter|capitolo|parte|part|ch|cap|section|sezione/gi, '')
+                .replace(/[_-]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+              if (!title || title.length < 3) title = `Sezione ${chapters.length + 1}`;
+            }
+          }
+
+          const bodyText = (doc.body?.textContent || '').trim();
+          if (bodyText.length > 30) {
+            chapters.push({
+              id: chapters.length,
+              title: title.substring(0, 120),
+              original: bodyText,
+              translated: '',
+              status: 'pending'
+            });
+          }
+        } catch (e) {
+          console.warn('Errore parsing capitolo EPUB:', filename, e);
+        }
+      }
+
+      return chapters;
+    } catch (e) {
+      console.error('Errore parseEpubChapters:', e);
+      return [];
+    }
+  }
+
+  // ========== GESTIONE PROGETTO LIBRO (Priority 2 - in sviluppo) ==========
+  // Questa sezione sarà completamente ristrutturata per supportare
+  // rilevamento capitoli avanzato e traduzione per capitolo.
+  let currentBookProject = null;
+
+  async function loadBookProject(chapters, bookTitle) {
+    if (!chapters || chapters.length === 0) {
+      setStatus("Nessun capitolo rilevato nell'EPUB", true);
+      return;
+    }
+
+    currentBookProject = {
+      id: 'proj_' + Date.now(),
+      title: bookTitle || 'Libro senza titolo',
+      sourceLang: from.value,
+      targetLang: to.value,
+      created: new Date().toISOString(),
+      updated: new Date().toISOString(),
+      sections: chapters.map((ch, index) => ({
+        id: index,
+        title: ch.title || `Capitolo ${index + 1}`,
+        original: ch.original || ch.text || '',
+        translated: ch.translated || '',
+        status: ch.translated ? 'translated' : 'pending'
+      }))
+    };
+
+    renderBookProjectPanel();
+    setStatus(`Progetto Libro caricato: ${currentBookProject.sections.length} sezioni`);
+    input.value = '';
+  }
+
+  function renderBookProjectPanel() {
+    const oldPanel = document.getElementById('bookProjectPanel');
+    if (oldPanel) oldPanel.remove();
+
+    if (!currentBookProject) return;
+
+    const panel = document.createElement('div');
+    panel.id = 'bookProjectPanel';
+    panel.style.cssText = 'margin: 0.5rem 0; padding: 0.6rem 0.75rem; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 10px; font-size: 0.9rem;';
+
+    const sectionsHtml = currentBookProject.sections.map((sec, i) => {
+      const statusIcon = sec.status === 'translated' ? '✅' : sec.status === 'reviewed' ? '✏️' : '⏳';
+      return `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0; border-bottom:1px solid var(--border);">
+          <div style="flex:1; font-size:0.9rem;">
+            <strong>${i+1}.</strong> ${sec.title}
+          </div>
+          <div style="display:flex; gap:0.4rem; align-items:center;">
+            <span style="font-size:0.8rem; opacity:0.7;">${statusIcon}</span>
+            <button onclick="translateBookSection(${i})" style="padding:0.2rem 0.6rem; font-size:0.75rem;">Traduci</button>
+            <button onclick="editBookSection(${i})" style="padding:0.2rem 0.6rem; font-size:0.75rem;">Modifica</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    panel.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+        <div>
+          <strong>📚 ${currentBookProject.title}</strong>
+          <span style="font-size:0.75rem; color:var(--text-dim); margin-left:0.5rem;">(${currentBookProject.sections.length} sezioni)</span>
+        </div>
+        <div>
+          <button onclick="translateAllBookSections()" style="padding:0.3rem 0.8rem; font-size:0.8rem;">Traduci tutte</button>
+          <button onclick="saveCurrentBookProject()" style="padding:0.3rem 0.8rem; font-size:0.8rem;">Salva Progetto</button>
+          <button onclick="closeBookProject()" style="padding:0.3rem 0.6rem; font-size:0.8rem;">Chiudi</button>
+        </div>
+      </div>
+      <div style="max-height: 280px; overflow-y: auto; font-size:0.85rem;">
+        ${sectionsHtml}
+      </div>
+    `;
+
+    const grid = document.querySelector('.grid');
+    if (grid) {
+      grid.parentNode.insertBefore(panel, grid.nextSibling);
+    } else {
+      document.querySelector('main').appendChild(panel);
+    }
+  }
+
+  window.translateBookSection = async function(index) {
+    if (!currentBookProject) return;
+    const sec = currentBookProject.sections[index];
+    if (!sec.original) return;
+
+    setStatus(`Traduzione sezione: ${sec.title}...`);
+    try {
+      const translated = await translateText(sec.original);
+      sec.translated = translated;
+      sec.status = 'translated';
+      currentBookProject.updated = new Date().toISOString();
+      renderBookProjectPanel();
+      setStatus(`Sezione "${sec.title}" tradotta`);
+    } catch (e) {
+      setStatus("Errore nella traduzione della sezione: " + e.message, true);
+    }
+  };
+
+  window.translateAllBookSections = async function() {
+    if (!currentBookProject) return;
+    for (let i = 0; i < currentBookProject.sections.length; i++) {
+      if (abortTranslation) break;
+      const sec = currentBookProject.sections[i];
+      if (sec.translated) continue;
+      await window.translateBookSection(i);
+      await new Promise(r => setTimeout(r, 350));
+    }
+    renderBookProjectPanel();
+  };
+
+  window.editBookSection = function(index) {
+    if (!currentBookProject) return;
+    const sec = currentBookProject.sections[index];
+    const newText = prompt(`Modifica traduzione per: ${sec.title}`, sec.translated || '');
+    if (newText !== null) {
+      sec.translated = newText;
+      sec.status = 'reviewed';
+      currentBookProject.updated = new Date().toISOString();
+      renderBookProjectPanel();
+    }
+  };
+
+  window.saveCurrentBookProject = async function() {
+    if (!currentBookProject) return;
+    try {
+      const db = await openDB();
+      const tx = db.transaction('projects', 'readwrite');
+      tx.objectStore('projects').put(currentBookProject);
+      setStatus("Progetto salvato");
+    } catch (e) {
+      setStatus("Errore salvataggio progetto", true);
+    }
+  };
+
+  window.closeBookProject = function() {
+    if (confirm('Chiudere il progetto?')) {
+      currentBookProject = null;
+      const panel = document.getElementById('bookProjectPanel');
+      if (panel) panel.remove();
+      setStatus("Progetto chiuso");
+    }
+  };
+
   downloadTxt.onclick = () => {
     if (!output.value.trim()) { setStatus("❌ Nessun testo", true); return; }
-    const blob = new Blob([output.value], { type: "text/plain" });
-    downloadBlob(blob, "traduzione_npc.txt");
+    const meta = getExportMeta();
+    const paragraphs = splitIntoParagraphs(output.value);
+
+    let content = '';
+    content += '========================================\n';
+    content += `${meta.title}\n`;
+    content += `========================================\n`;
+    content += `Data: ${meta.date}\n`;
+    content += `Da: ${meta.from}\n`;
+    content += `A:  ${meta.to}\n`;
+    content += `Parole: ${meta.wordCount}  |  Caratteri: ${meta.charCount}\n`;
+    content += '========================================\n\n';
+
+    paragraphs.forEach(p => {
+      content += p.trim() + '\n\n';
+    });
+
+    content += '\n--- Fine traduzione ---\n';
+
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const filename = generateSmartFilename('txt', meta);
+    downloadBlob(blob, filename);
     setStatus("✅ File TXT scaricato");
   };
 
@@ -668,64 +1599,105 @@
     if (typeof jspdf === 'undefined' && typeof window.jspdf === 'undefined') {
       setStatus("❌ Libreria PDF non caricata", true); return;
     }
+    const meta = getExportMeta();
+    const paragraphs = splitIntoParagraphs(output.value);
+    const isRTL = ['yi', 'he', 'ar'].includes(to.value);
+
     const { jsPDF } = window.jspdf || window;
-    const doc = new jsPDF();
-    const pageHeight = doc.internal.pageSize.height;
-    const margin = 10;
-    let y = margin;
-    const lineHeight = 7;
-    const lines = doc.splitTextToSize(output.value, 180);
-    for (let i = 0; i < lines.length; i++) {
-      if (y + lineHeight > pageHeight - margin) {
-        doc.addPage();
-        y = margin;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 18;
+    const maxWidth = pageWidth - margin * 2;
+    const lineHeight = 6.5;
+    const paraSpacing = 4;
+    let y = margin + 12;
+
+    // Header block
+    doc.setFontSize(14);
+    doc.setTextColor(100, 60, 180);
+    doc.text(meta.title, margin, margin + 2);
+
+    doc.setFontSize(10);
+    doc.setTextColor(90);
+    doc.text(`Da: ${meta.from}   →   A: ${meta.to}    |    ${meta.date}`, margin, margin + 8);
+
+    doc.setDrawColor(160, 85, 247);
+    doc.setLineWidth(0.5);
+    doc.line(margin, margin + 11, pageWidth - margin, margin + 11);
+
+    // Content
+    doc.setFontSize(11);
+    doc.setTextColor(20);
+
+    paragraphs.forEach((para, idx) => {
+      const lines = doc.splitTextToSize(para, maxWidth);
+      for (let i = 0; i < lines.length; i++) {
+        if (y + lineHeight > pageHeight - margin - 12) {
+          doc.addPage();
+          y = margin + 12;
+        }
+        // Basic RTL note: jsPDF default is LTR; full RTL needs extra libs
+        doc.text(lines[i], margin, y);
+        y += lineHeight;
       }
-      doc.text(lines[i], 10, y);
-      y += lineHeight;
+      y += paraSpacing;
+      if (idx < paragraphs.length - 1 && y > pageHeight - margin - 20) {
+        doc.addPage();
+        y = margin + 12;
+      }
+    });
+
+    // Footer
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= pageCount; p++) {
+      doc.setPage(p);
+      doc.setFontSize(8);
+      doc.setTextColor(130);
+      doc.text(`NPC Translator • ${meta.pair} • Pagina ${p} / ${pageCount}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
     }
-    doc.save("traduzione_npc.pdf");
+
+    const filename = generateSmartFilename('pdf', meta);
+    doc.save(filename);
     setStatus("✅ File PDF scaricato");
   };
 
   downloadDocx.onclick = async () => {
-    if (!output.value.trim()) { setStatus("❌ Nessun testo", true); return; }
-    
-    // Carica dinamicamente la libreria docx se non presente
-    if (typeof docx === 'undefined') {
-      setStatus("Caricamento libreria DOCX...");
-      try {
-        await loadScript('https://cdn.jsdelivr.net/npm/docx@8.2.0/build/index.min.js');
-      } catch (e) {
-        setStatus("❌ Impossibile caricare la libreria DOCX", true);
-        return;
-      }
+    if (!output.value.trim()) { 
+      setStatus("❌ Nessun testo da esportare", true); 
+      return; 
     }
 
     try {
-      const { Document, Packer, Paragraph, TextRun } = docx;
-      const doc = new Document({
-        sections: [{
-          properties: {},
-          children: [
-            new Paragraph({
-              children: [new TextRun(output.value)],
-            }),
-          ],
-        }],
-      });
-      const blob = await Packer.toBlob(doc);
-      downloadBlob(blob, "traduzione_npc.docx");
+      setStatus("Generazione file DOCX...");
+
+      const meta = getExportMeta();
+      const blob = await createDocxBlob(output.value, meta);
+      
+      const filename = generateSmartFilename('docx', meta);
+      downloadBlob(blob, filename);
+      
       setStatus("✅ File DOCX scaricato");
     } catch (err) {
-      setStatus("❌ Errore creazione DOCX: " + err.message, true);
+      console.error('[DOCX] Errore generazione:', err);
+      setStatus("❌ Errore nella creazione del DOCX: " + (err?.message || err), true);
     }
   };
 
   downloadEpub.onclick = async () => {
     if (!output.value.trim()) { setStatus("❌ Nessun testo", true); return; }
     try {
+      const meta = getExportMeta();
+      const paragraphs = splitIntoParagraphs(output.value);
+      const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+      const paraHtml = paragraphs.map(p =>
+        `<p>${escapeHtml(p).replace(/\n/g, '<br/>')}</p>`
+      ).join('\n');
+
       const zip = new JSZip();
       zip.file("mimetype", "application/epub+zip");
+
       const containerXml = `<?xml version="1.0"?>
 <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
   <rootfiles>
@@ -733,32 +1705,74 @@
   </rootfiles>
 </container>`;
       zip.file("META-INF/container.xml", containerXml);
+
       const contentOpf = `<?xml version="1.0"?>
 <package version="3.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="BookId">
-  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
     <dc:identifier id="BookId">urn:uuid:${crypto.randomUUID()}</dc:identifier>
-    <dc:title>Traduzione NPC</dc:title>
+    <dc:title>${escapeHtml(meta.title)}</dc:title>
     <dc:language>${to.value}</dc:language>
+    <dc:creator>NPC Translator</dc:creator>
+    <dc:date>${new Date().toISOString().split('T')[0]}</dc:date>
+    <dc:description>Traduzione automatica da ${meta.from} a ${meta.to} • ${meta.wordCount} parole</dc:description>
+    <meta property="dcterms:modified">${new Date().toISOString()}</meta>
   </metadata>
   <manifest>
+    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
     <item id="content" href="content.xhtml" media-type="application/xhtml+xml"/>
+    <item id="style" href="style.css" media-type="text/css"/>
   </manifest>
   <spine>
     <itemref idref="content"/>
   </spine>
 </package>`;
       zip.file("content.opf", contentOpf);
+
+      // Nice embedded CSS for reading
+      const css = `
+        body { font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Noto Sans", sans-serif; line-height: 1.65; font-size: 1.05em; margin: 1.2em; color: #222; }
+        h1 { font-size: 1.6em; color: #5b21b6; border-bottom: 2px solid #c026ff; padding-bottom: 0.3em; margin-bottom: 0.4em; }
+        .meta { color: #666; font-size: 0.9em; margin-bottom: 1.5em; text-align: center; }
+        p { margin: 0 0 1em 0; text-align: justify; }
+        .footer { margin-top: 2em; font-size: 0.8em; color: #888; text-align: center; font-style: italic; border-top: 1px solid #ddd; padding-top: 1em; }
+      `;
+      zip.file("style.css", css.trim());
+
       const contentXhtml = `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head><title>Traduzione</title></head>
+<head>
+  <title>${escapeHtml(meta.title)}</title>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" type="text/css" href="style.css"/>
+</head>
 <body>
-  <p>${output.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>')}</p>
+  <h1>${escapeHtml(meta.title)}</h1>
+  <div class="meta">${meta.from} → ${meta.to} &nbsp;•&nbsp; ${meta.date} &nbsp;•&nbsp; ${meta.wordCount} parole</div>
+  ${paraHtml || '<p></p>'}
+  <div class="footer">— Traduzione generata con NPC Translator —</div>
 </body>
 </html>`;
       zip.file("content.xhtml", contentXhtml);
+
+      // Minimal nav for EPUB3
+      const navXhtml = `<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+<head><title>Nav</title></head>
+<body>
+  <nav epub:type="toc">
+    <ol>
+      <li><a href="content.xhtml">${escapeHtml(meta.title)}</a></li>
+    </ol>
+  </nav>
+</body>
+</html>`;
+      zip.file("nav.xhtml", navXhtml);
+
       const blob = await zip.generateAsync({ type: 'blob' });
-      downloadBlob(blob, "traduzione_npc.epub");
+      const filename = generateSmartFilename('epub', meta);
+      downloadBlob(blob, filename);
       setStatus("✅ File EPUB scaricato");
     } catch (err) {
       setStatus("❌ Errore creazione EPUB: " + err.message, true);
@@ -796,44 +1810,121 @@
     throw new Error('Nessun server disponibile');
   }
 
+  // ---------- LOGICA DI TRADUZIONE (con supporto Modalità Libro) ----------
+  function chunkForTranslation(text, useBookMode) {
+    if (!useBookMode) {
+      // Modalità classica (veloce)
+      const MAX = 1600;
+      const parts = [];
+      for (let i = 0; i < text.length; i += MAX) {
+        parts.push(text.slice(i, i + MAX));
+      }
+      return parts;
+    }
+
+    // Modalità Libro: suddivide per paragrafi e raggruppa intelligentemente
+    const paragraphs = text.trim().split(/\n\s*\n+/).filter(p => p.trim().length > 0);
+    const chunks = [];
+    let currentChunk = '';
+    const MAX_CHUNK = 2200;           // un po' più grande ma più sicuro
+    const MIN_CHUNK = 800;
+
+    for (let i = 0; i < paragraphs.length; i++) {
+      const para = paragraphs[i].trim();
+      const potential = currentChunk ? currentChunk + '\n\n' + para : para;
+
+      if (potential.length > MAX_CHUNK && currentChunk.length > MIN_CHUNK) {
+        chunks.push(currentChunk);
+        currentChunk = para;
+      } else {
+        currentChunk = potential;
+      }
+    }
+
+    if (currentChunk) chunks.push(currentChunk);
+
+    return chunks.length > 0 ? chunks : [text];
+  }
+
   async function translateText(text) {
-    const MAX = 1500;
-    const parts = [];
-    for (let i = 0; i < text.length; i += MAX) parts.push(text.slice(i, i + MAX));
-    let result = "";
+    const useBookMode = bookMode && bookMode.checked;
+    const parts = chunkForTranslation(text, useBookMode);
+
+    let result = '';
+    let previousContext = '';   // contesto da passare alla chiamata successiva
+
     for (let i = 0; i < parts.length; i++) {
       if (abortTranslation) throw new Error('Annullato');
-      setStatus(`Traduzione ${i + 1}/${parts.length}`);
+
+      setStatus(`Traduzione ${i + 1}/${parts.length}${useBookMode ? ' (Modalità Libro)' : ''}`);
       bar.style.width = ((i + 1) / parts.length * 100) + "%";
-      const translated = await translateWithServer(parts[i], from.value, to.value);
-      result += translated + (i < parts.length - 1 ? " " : "");
-      if (i < parts.length - 1 && !abortTranslation) await new Promise(r => setTimeout(r, 500));
+
+      let textToSend = parts[i];
+
+      // In Modalità Libro passiamo un po' di contesto
+      if (useBookMode && previousContext) {
+        textToSend = `Contesto precedente (da mantenere coerente):\n"${previousContext}"\n\nTraduci il testo seguente mantenendo nomi, stile e tono:\n\n${parts[i]}`;
+      }
+
+      const translated = await translateWithServer(textToSend, from.value, to.value);
+      result += (i > 0 ? '\n\n' : '') + translated;
+
+      // Prepariamo contesto per il prossimo chunk (ultime 1-2 frasi)
+      if (useBookMode) {
+        const sentences = translated.split(/[.!?。！？]\s+/);
+        previousContext = sentences.slice(-2).join('. ').slice(-280);
+      }
+
+      if (i < parts.length - 1 && !abortTranslation) {
+        await new Promise(r => setTimeout(r, useBookMode ? 650 : 400));
+      }
     }
+
     return result;
   }
 
   translateBtn.onclick = async () => {
     if (!input.value.trim()) { setStatus("❌ Inserisci testo", true); return; }
     if (isTranslating) { setStatus("Traduzione già in corso", true); return; }
+
+    const useBookMode = bookMode && bookMode.checked;
+
     abortTranslation = false;
     isTranslating = true;
     translateBtn.disabled = true;
     abortBtn.style.display = 'inline-flex';
-    setStatus("Traduzione in corso...");
+
+    setStatus(useBookMode ? "Traduzione in corso (Modalità Libro)..." : "Traduzione in corso...");
     bar.style.width = "0%";
+
     try {
-      let translated = await translateText(input.value);
+      let textToTranslate = input.value;
+
+      // In Modalità Libro applichiamo il glossario PRIMA della traduzione (migliore coerenza)
+      if (useBookMode) {
+        textToTranslate = await applyGlossary(textToTranslate, to.value);
+      }
+
+      let translated = await translateText(textToTranslate);
+
       if (!abortTranslation) {
         output.value = translated;
-        setStatus("✅ Completata!");
+
+        // In modalità normale applichiamo il glossario dopo (comportamento storico)
+        if (!useBookMode) {
+          output.value = await applyGlossary(output.value, to.value);
+        }
+
+        setStatus("✅ Completata!" + (useBookMode ? " (Modalità Libro)" : ""));
         bar.style.width = "100%";
-        saveToHistory(input.value, translated);
-        output.value = await applyGlossary(output.value, to.value);
+        saveToHistory(input.value, output.value);
+
         const wordCount = input.value.trim().split(/\s+/).length;
         updateTotalWords(wordCount);
       } else {
         setStatus("⛔ Annullata");
       }
+
       checkRTL(); updateCounters();
     } catch (e) {
       setStatus("❌ Errore: " + e.message, true);
@@ -882,25 +1973,51 @@
   speechSynthesis.onvoiceschanged = loadVoices;
   loadVoices();
 
-  speakBtn.onclick = () => {
-    if (!output.value.trim()) { setStatus("❌ Nessuna traduzione da ascoltare", true); return; }
+  // Helper per la sintesi vocale (usato sia per input che per output)
+  function speakText(text, lang) {
+    if (!text || !text.trim()) {
+      setStatus("❌ Nessun testo da ascoltare", true);
+      return;
+    }
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(output.value);
-    utterance.lang = to.value;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang || 'en';
     utterance.rate = parseFloat(rateSlider.value);
     utterance.pitch = parseFloat(pitchSlider.value);
+
     const selectedVoice = voiceSelect.selectedOptions[0]?.value;
     if (selectedVoice) {
       const voice = speechSynthesis.getVoices().find(v => v.name === selectedVoice);
       if (voice) utterance.voice = voice;
     }
     speechSynthesis.speak(utterance);
+  }
+
+  speakBtn.onclick = () => {
+    speakText(output.value, to.value);
   };
 
   stopSpeakBtn.onclick = () => {
     window.speechSynthesis.cancel();
     setStatus("Audio interrotto");
   };
+
+  // Ascolta il testo di INPUT (prima della traduzione)
+  if (speakInputBtn) {
+    speakInputBtn.onclick = () => {
+      // Se la lingua è "auto", usiamo un fallback ragionevole (si può migliorare in futuro)
+      let sourceLang = from.value;
+      if (sourceLang === 'auto') sourceLang = 'en';
+      speakText(input.value, sourceLang);
+    };
+  }
+
+  if (stopSpeakInputBtn) {
+    stopSpeakInputBtn.onclick = () => {
+      window.speechSynthesis.cancel();
+      setStatus("Audio interrotto");
+    };
+  }
 
   // ---------- CONDIVISIONE ----------
   shareBtn.onclick = async () => {
@@ -1004,6 +2121,17 @@
       }
       if (name.endsWith('.epub')) {
         const arrayBuffer = await file.arrayBuffer();
+
+        // Se siamo in Modalità Libro, proviamo a estrarre capitoli strutturati
+        if (bookMode && bookMode.checked) {
+          const chapters = await parseEpubChapters(arrayBuffer);
+          if (chapters.length > 0) {
+            // Restituiamo un formato speciale che il gestore di progetto può riconoscere
+            return { __type: 'book-chapters', chapters, filename: file.name };
+          }
+        }
+
+        // Fallback: estrazione classica (testo piatto)
         const zip = await JSZip.loadAsync(arrayBuffer);
         let fullText = '';
         let count = 0;
@@ -1067,7 +2195,17 @@
       try {
         setStatus(`Lettura ${file.name} (${i+1}/${files.length})...`);
         bar.style.width = ((i+1) / files.length * 100) + "%";
-        const text = await readFile(file);
+        const result = await readFile(file);
+
+        // Supporto per Progetti Libro (EPUB strutturato)
+        if (result && result.__type === 'book-chapters') {
+          await loadBookProject(result.chapters, result.filename || file.name);
+          successCount++;
+          fileInfo.textContent = `✅ Progetto Libro caricato: ${file.name}`;
+          return; // non continuare con il flusso normale
+        }
+
+        const text = typeof result === 'string' ? result : String(result);
         input.value += (input.value ? "\n\n" : "") + `[${file.name}]\n${text}`;
         successCount++;
         fileInfo.textContent = `✅ ${file.name} caricato`;
@@ -1147,13 +2285,38 @@
         }
       }
       setStatus("Generazione ZIP...");
+
       const blob = await zip.generateAsync({ type: 'blob' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `traduzioni_batch_${new Date().toISOString().slice(0,10)}.zip`;
-      a.click();
-      URL.revokeObjectURL(a.href);
-      setStatus("✅ Batch completato");
+      const suggestedName = `traduzioni_batch_${new Date().toISOString().slice(0,10)}.zip`;
+
+      // Prova a far scegliere all'utente dove salvare il file (Save As)
+      if (window.showSaveFilePicker) {
+        try {
+          const fileHandle = await window.showSaveFilePicker({
+            suggestedName: suggestedName,
+            types: [{
+              description: 'File ZIP',
+              accept: { 'application/zip': ['.zip'] }
+            }]
+          });
+          const writable = await fileHandle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+          setStatus("✅ Batch completato e salvato");
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            // Se l'utente non ha annullato, fallback al download normale
+            downloadBlob(blob, suggestedName);
+            setStatus("✅ Batch completato (download automatico)");
+          } else {
+            setStatus("Batch annullato dall'utente");
+          }
+        }
+      } else {
+        // Fallback per browser che non supportano showSaveFilePicker
+        downloadBlob(blob, suggestedName);
+        setStatus("✅ Batch completato");
+      }
       bar.style.width = "0%";
       if (Notification.permission === 'granted') {
         new Notification('Batch completato', { body: `Tradotti ${files.length} file.` });
@@ -1175,13 +2338,17 @@
   // ---------- CRONOLOGIA ----------
   function openDB() {
     return new Promise((resolve, reject) => {
-      const req = indexedDB.open('NPCTranslator', 2);
+      const req = indexedDB.open('NPCTranslator', 3);
       req.onupgradeneeded = (e) => {
         const db = e.target.result;
         if (!db.objectStoreNames.contains('history')) db.createObjectStore('history', { keyPath: 'id', autoIncrement: true });
         if (!db.objectStoreNames.contains('glossary')) {
           const store = db.createObjectStore('glossary', { keyPath: 'id', autoIncrement: true });
           store.createIndex('term', 'term', { unique: false });
+        }
+        if (!db.objectStoreNames.contains('projects')) {
+          const store = db.createObjectStore('projects', { keyPath: 'id' });
+          store.createIndex('updated', 'updated', { unique: false });
         }
       };
       req.onsuccess = () => resolve(req.result);
@@ -1201,21 +2368,46 @@
     const tx = db.transaction('history', 'readonly');
     const store = tx.objectStore('history');
     const all = await new Promise((res) => { const req = store.getAll(); req.onsuccess = () => res(req.result); });
-    const searchTerm = historySearch.value.toLowerCase();
-    const filtered = all.filter(item => item.original.toLowerCase().includes(searchTerm) || item.translated.toLowerCase().includes(searchTerm));
-    historyList.innerHTML = filtered.reverse().slice(0, 20).map(item =>
-      `<li onclick="loadHistoryItem(${item.id})" style="cursor:pointer; border-bottom:1px solid var(--border); padding:0.5rem;">${item.original.substring(0,30)}… → ${item.translated.substring(0,30)}…</li>`
-    ).join('');
+    const searchTerm = (historySearch.value || '').toLowerCase();
+    const filtered = all.filter(item =>
+      (item.original || '').toLowerCase().includes(searchTerm) ||
+      (item.translated || '').toLowerCase().includes(searchTerm)
+    );
+    const frag = document.createDocumentFragment();
+    filtered.reverse().slice(0, 20).forEach(item => {
+      const li = document.createElement('li');
+      li.dataset.id = item.id;
+      li.style.cssText = 'cursor:pointer; border-bottom:1px solid var(--border); padding:0.5rem;';
+      const orig = (item.original || '').substring(0, 30);
+      const trans = (item.translated || '').substring(0, 30);
+      li.textContent = `${orig}… → ${trans}…`;
+      frag.appendChild(li);
+    });
+    historyList.innerHTML = '';
+    historyList.appendChild(frag);
   }
 
-  window.loadHistoryItem = async (id) => {
+  // Delegated click for history items (more robust than inline onclick)
+  historyList.onclick = async (e) => {
+    const li = e.target.closest('li[data-id]');
+    if (!li) return;
+    const id = Number(li.dataset.id);
+    if (!id) return;
     const db = await openDB();
     const tx = db.transaction('history', 'readonly');
-    const item = await new Promise((res) => { const req = tx.objectStore('history').get(id); req.onsuccess = () => res(req.result); });
-    input.value = item.original;
-    output.value = item.translated;
-    updateCounters(); checkRTL();
+    const item = await new Promise((res) => {
+      const req = tx.objectStore('history').get(id);
+      req.onsuccess = () => res(req.result);
+    });
+    if (item) {
+      input.value = item.original || '';
+      output.value = item.translated || '';
+      updateCounters();
+      checkRTL();
+    }
   };
+
+  // (loadHistoryItem replaced by delegated handler on #historyList for robustness)
 
   clearHistoryBtn.onclick = async () => {
     if (!confirm('Cancellare tutta la cronologia?')) return;
@@ -1265,9 +2457,14 @@
     const tx = db.transaction('glossary', 'readonly');
     const store = tx.objectStore('glossary');
     const all = await new Promise((res) => { const req = store.getAll(); req.onsuccess = () => res(req.result); });
-    glossaryList.innerHTML = all.map(item =>
-      `<li style="border-bottom:1px solid var(--border); padding:0.3rem;">${item.term} → ${item.translation} <button class="delGloss" data-id="${item.id}">❌</button> <button class="editGloss" data-id="${item.id}">✏️</button></li>`
-    ).join('');
+    glossaryList.innerHTML = all.map(item => {
+      const typeLabel = item.matchType === 'phrase' ? '📝' : '🔤';
+      return `<li style="border-bottom:1px solid var(--border); padding:0.3rem;">
+        ${typeLabel} <strong>${item.term}</strong> → ${item.translation}
+        <button class="delGloss" data-id="${item.id}">❌</button>
+        <button class="editGloss" data-id="${item.id}">✏️</button>
+      </li>`;
+    }).join('');
     document.querySelectorAll('.delGloss').forEach(btn => {
       btn.onclick = async (e) => {
         e.stopPropagation();
@@ -1295,24 +2492,43 @@
       item = await new Promise((res) => { const req = tx.objectStore('glossary').get(id); req.onsuccess = () => res(req.result); });
     }
     const container = document.getElementById('glossaryEditContainer');
+    const currentType = item?.matchType || (item?.term?.includes(' ') ? 'phrase' : 'word');
+
     container.innerHTML = `
-      <input type="text" id="glossTerm" placeholder="Termine" value="${item ? item.term : ''}">
+      <input type="text" id="glossTerm" placeholder="Termine o frase (es. 'Lord of Winterfell')" value="${item ? item.term : ''}">
       <input type="text" id="glossTranslation" placeholder="Traduzione" value="${item ? item.translation : ''}">
+      <div style="display:flex; gap:8px; margin:6px 0;">
+        <label style="font-size:0.85rem; display:flex; align-items:center; gap:4px;">
+          <input type="radio" name="glossType" value="word" ${currentType === 'word' ? 'checked' : ''}> Parola
+        </label>
+        <label style="font-size:0.85rem; display:flex; align-items:center; gap:4px;">
+          <input type="radio" name="glossType" value="phrase" ${currentType === 'phrase' ? 'checked' : ''}> Frase intera
+        </label>
+      </div>
       <input type="text" id="glossTargetLang" placeholder="Lingua (es. it)" value="${item ? item.targetLang : to.value}">
       <button id="saveGloss">Salva</button>
+      <div style="font-size:0.7rem; color:var(--text-dim); margin-top:4px;">
+        Per libri: usa "Frase intera" per nomi di personaggi e luoghi lunghi.
+      </div>
     `;
     glossaryDialog.showModal();
     document.getElementById('saveGloss').onclick = async () => {
       const term = document.getElementById('glossTerm').value.trim();
       const translation = document.getElementById('glossTranslation').value.trim();
       const targetLang = document.getElementById('glossTargetLang').value.trim();
+      const matchTypeEl = container.querySelector('input[name="glossType"]:checked');
+      const matchType = matchTypeEl ? matchTypeEl.value : (term.includes(' ') ? 'phrase' : 'word');
+
       if (!term || !translation || !targetLang) return;
+
       const db = await openDB();
       const tx = db.transaction('glossary', 'readwrite');
+      const data = { term, translation, targetLang, matchType };
+
       if (id) {
-        tx.objectStore('glossary').put({ id, term, translation, targetLang });
+        tx.objectStore('glossary').put({ id, ...data });
       } else {
-        tx.objectStore('glossary').add({ term, translation, targetLang });
+        tx.objectStore('glossary').add(data);
       }
       tx.oncomplete = () => {
         loadGlossary();
@@ -1357,18 +2573,47 @@
     input.click();
   };
 
+  // ========== GLOSSARIO AVANZATO ==========
   async function applyGlossary(text, targetLang) {
     const db = await openDB();
     const tx = db.transaction('glossary', 'readonly');
     const store = tx.objectStore('glossary');
     const all = await new Promise((res) => { const req = store.getAll(); req.onsuccess = () => res(req.result); });
+
+    // Filtra per lingua e ordina per lunghezza decrescente (frasi lunghe prima)
+    const entries = all
+      .filter(e => e.targetLang === targetLang)
+      .sort((a, b) => (b.term?.length || 0) - (a.term?.length || 0));
+
     let result = text;
-    for (const entry of all) {
-      if (entry.targetLang === targetLang) {
-        const regex = new RegExp('\\b' + entry.term + '\\b', 'gi');
+
+    for (const entry of entries) {
+      if (!entry.term || !entry.translation) continue;
+
+      const term = entry.term.trim();
+      if (!term) continue;
+
+      try {
+        // Escape per regex
+        const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+        // Prova prima con regex Unicode (migliore per accenti)
+        const regex = new RegExp('(^|[^\\p{L}\\p{N}])(' + escaped + ')(?=$|[^\\p{L}\\p{N}])', 'giu');
+
+        result = result.replace(regex, (match, prefix, matchedTerm) => {
+          const replacement = entry.translation;
+          if (matchedTerm[0] === matchedTerm[0].toUpperCase() && matchedTerm.length > 1) {
+            return prefix + replacement.charAt(0).toUpperCase() + replacement.slice(1);
+          }
+          return prefix + replacement;
+        });
+      } catch (e) {
+        // Fallback per browser molto vecchi
+        const regex = new RegExp('\\b' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
         result = result.replace(regex, entry.translation);
       }
     }
+
     return result;
   }
 
@@ -1410,5 +2655,5 @@
     Notification.requestPermission();
   }
 </script>
+
 </body>
-</html>
