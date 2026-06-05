@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
@@ -56,16 +58,6 @@
       margin: 0;
       transition: background 0.3s, color 0.3s;
     }
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: linear-gradient(rgba(168,85,247,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(168,85,247,0.03) 1px, transparent 1px);
-      background-size: 50px 50px;
-      pointer-events: none;
-      z-index: -1;
-    }
     main { max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
     h1 {
       text-align: center; color: white; font-size: 2.6rem; margin-bottom: 0.8rem;
@@ -79,14 +71,6 @@
       color: var(--primary); opacity: 0.3; filter: blur(8px); z-index: -1;
     }
     h1 i { color: var(--primary); margin: 0 0.5rem; font-size: 3rem; animation: float 3s ease-in-out infinite; }
-    .badge-container { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
-    .badge {
-      background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(168,85,247,0.2));
-      border: 1px solid var(--primary); color: var(--text); padding: 0.5rem 1.2rem; border-radius: 30px;
-      font-size: 0.9rem; backdrop-filter: blur(5px); box-shadow: 0 0 15px rgba(168,85,247,0.2); transition: all 0.3s ease;
-    }
-    .badge:hover { transform: translateY(-2px); box-shadow: 0 5px 20px var(--primary-glow); background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(168,85,247,0.3)); }
-    .badge i { margin-right: 0.5rem; color: var(--primary); }
     .language-selector {
       display: flex; 
       gap: 0.3rem; 
@@ -101,7 +85,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
-    /* View controls (tema + immersivo) nella barra lingue */
+    /* View controls (tema) nella barra lingue */
     .view-controls {
       display: flex;
       gap: 0.4rem;
@@ -115,11 +99,12 @@
       background: var(--bg-surface-light);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 0.4rem 0.55rem;
+      padding: 0.5rem 0.65rem;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 1.1rem;
       transition: all 0.15s ease;
+      position: relative;
     }
 
     .view-controls button:hover {
@@ -140,7 +125,7 @@
       white-space: nowrap;
       border-width: 1px;
       cursor: pointer;
-      background: rgba(168, 85, 247, 0.08);
+      background: var(--bg-surface-light);
     }
 
     .language-selector .drop-zone i {
@@ -238,7 +223,7 @@
     textarea {
       min-height: 320px; background: var(--bg-surface); border: 1px solid var(--border); color: var(--text);
       padding: 0.9rem; border-radius: 14px; font-size: 0.95rem; line-height: 1.5; resize: vertical; transition: all 0.3s ease;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.25); backdrop-filter: blur(8px); -webkit-appearance: none;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
       width: 100%; box-sizing: border-box;
     }
     textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 30px var(--primary-glow); transform: translateY(-2px); }
@@ -280,7 +265,7 @@
     /* Azioni principali nella barra superiore - solo icone */
     .top-actions {
       display: flex;
-      gap: 0.2rem;
+      gap: 0.35rem;
       align-items: center;
       margin-left: 0.25rem;
       padding-left: 0.3rem;
@@ -289,8 +274,8 @@
 
     .top-actions > button,
     .top-actions .dropdown-btn {
-      padding: 0.38rem 0.55rem;
-      font-size: 1.05rem;          /* Icona più visibile */
+      padding: 0.5rem 0.7rem;
+      font-size: 1.15rem;
       border-radius: 6px;
       background: var(--bg-surface-light);
       border: 1px solid var(--border);
@@ -300,8 +285,9 @@
       align-items: center;
       justify-content: center;
       transition: all 0.15s ease;
-      min-width: 32px;
-      min-height: 32px;
+      min-width: 38px;
+      min-height: 38px;
+      position: relative;
     }
 
     .top-actions > button:hover,
@@ -314,7 +300,8 @@
     /* Tooltip personalizzati per pulsanti icona */
     .top-actions button[title]:hover::after,
     .top-actions .dropdown-btn[title]:hover::after,
-    .view-controls button[title]:hover::after {
+    .view-controls button[title]:hover::after,
+    #immersiveToggle[title]:hover::after {
       content: attr(title);
       position: absolute;
       top: -30px;
@@ -346,11 +333,6 @@
       gap: 0.4rem;
       transition: all 0.2s ease;
     }
-    button::before {
-      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s ease;
-    }
-    button:hover::before { left: 100%; }
     button:hover { transform: translateY(-3px); box-shadow: 0 10px 25px var(--primary-glow); }
     button i { font-size: 1.2rem; }
     #clear { background: var(--bg-surface-light); box-shadow: none; border: 1px solid var(--border); }
@@ -364,17 +346,13 @@
       background: var(--primary); color: white;
     }
     .drop-zone {
-      border: 2px dashed var(--primary); background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(168,85,247,0.1));
+      border: 2px dashed var(--primary);
+      background: var(--bg-surface-light);
       padding: 0.7rem; text-align: center; border-radius: 12px; cursor: pointer; margin: 0.4rem 0; transition: all 0.3s ease;
-      backdrop-filter: blur(5px); position: relative; overflow: hidden;
     }
-    .drop-zone::before {
-      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-      background: radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 70%); opacity: 0; transition: opacity 0.5s ease;
-    }
-    .drop-zone:hover::before { opacity: 1; }
     .drop-zone:hover {
-      border-color: var(--secondary); background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(168,85,247,0.2));
+      border-color: var(--secondary);
+      background: var(--bg-surface);
       transform: scale(1.02); box-shadow: 0 0 40px var(--primary-glow);
     }
     .drop-zone i { font-size: 1.8rem; color: var(--primary); margin-bottom: 0.4rem; display: block; }
@@ -389,7 +367,7 @@
     .status {
       text-align: center; color: var(--text-dim); font-size: 1rem; padding: 1rem;
       border-radius: 30px; background: var(--bg-surface); border: 1px solid var(--border);
-      margin-top: 1rem; backdrop-filter: blur(5px);
+      margin-top: 1rem;
     }
     .status i { color: var(--primary); margin-right: 0.5rem; }
 
@@ -413,7 +391,7 @@
       color: #854d0e;
       border-color: #fcd34d;
     }
-    .file-info { margin-top: 1rem; padding: 0.8rem; background: rgba(168,85,247,0.1); border-radius: 20px; font-size: 0.9rem; color: var(--text-dim); display: inline-block; }
+    .file-info { margin-top: 1rem; padding: 0.8rem; background: var(--bg-surface-light); border-radius: 20px; font-size: 0.9rem; color: var(--text-dim); display: inline-block; }
     /* Pannelli laterali - design moderno e compatto */
     .panel {
       background: var(--bg-surface);
@@ -508,8 +486,7 @@
     dialog { background: var(--bg-surface); color: var(--text); border: 1px solid var(--primary); border-radius: 20px; padding: 1.5rem; max-width: 400px; }
     dialog::backdrop { background: rgba(0,0,0,0.7); }
     .glossary-edit input { width: 100%; margin-bottom: 0.5rem; background: var(--bg-surface-light); border: 1px solid var(--border); color: var(--text); padding: 0.5rem; border-radius: 8px; }
-    .immersive-mode .badge-container, 
-    .immersive-mode .language-selector, 
+    .immersive-mode .language-selector > :not(#immersiveToggle), 
     .immersive-mode .action-bar, 
     .immersive-mode .drop-zone, 
     .immersive-mode #progress, 
@@ -518,22 +495,38 @@
       display: none !important; 
     }
 
+    /* Collassa la barra lingua in immersive (solo il pulsante schermo resta, posizionato fixed) */
+    .immersive-mode .language-selector {
+      height: 0 !important;
+      min-height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      overflow: visible;
+    }
+
     /* Stile base del pulsante Immersive (sempre visibile) */
     #immersiveToggle {
       background: var(--bg-surface-light);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 0.4rem 0.6rem;
+      padding: 0.5rem 0.65rem;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 1.1rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      position: relative;
+      margin-left: 0.25rem;
     }
 
     #immersiveToggle:hover {
-      background: var(--bg-surface);
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
     }
 
     /* In modalità immersiva diventa floating e più visibile */
@@ -614,8 +607,6 @@
       body { padding: 0.5rem 0.6rem; }
       h1 { font-size: 2rem; white-space: normal; margin-bottom: 0.4rem; }
       h1 i { font-size: 1.7rem; }
-      .badge-container { gap: 0.3rem; margin-bottom: 0.6rem; }
-      .badge { padding: 0.2rem 0.6rem; font-size: 0.65rem; }
       .language-selector {
         flex-direction: column;
         align-items: stretch;
@@ -635,6 +626,7 @@
       .view-controls button {
         padding: 0.3rem 0.5rem;
         font-size: 0.9rem;
+        position: relative;
       }
       .language-selector select {
         min-width: auto;
@@ -669,6 +661,7 @@
         padding: 0.3rem 0.45rem;
         font-size: 1rem;
         justify-content: center;
+        position: relative;
       }
       .checkbox-group {
         flex-direction: column;
@@ -703,7 +696,6 @@
       body { padding: 0.5rem; }
       h1 { font-size: 1.8rem; }
       h1 i { font-size: 1.5rem; }
-      .badge { padding: 0.2rem 0.5rem; font-size: 0.65rem; }
       textarea { min-height: 250px; }
       .language-selector select { font-size: 0.8rem; padding: 0.6rem 1rem; }
       button { padding: 0.6rem 0.8rem; font-size: 0.8rem; }
@@ -723,15 +715,6 @@
 <body>
 <main>
   <h1><i class="fas fa-skull"></i> NPC Translator <i class="fas fa-skull"></i></h1>
-  <div class="badge-container">
-    <span class="badge"><i class="fas fa-file-pdf"></i> PDF</span>
-    <span class="badge"><i class="fas fa-book"></i> EPUB</span>
-    <span class="badge"><i class="fas fa-file-text"></i> TXT</span>
-    <span class="badge"><i class="fas fa-file-word"></i> DOCX</span>
-    <span class="badge"><i class="fas fa-image"></i> OCR</span>
-    <span class="badge"><i class="fas fa-microphone"></i> VOCE</span>
-    <span class="badge"><i class="fas fa-wifi-slash"></i> Offline (sim)</span>
-  </div>
 
   <!-- Offline banner -->
   <div id="offlineBanner" class="offline-banner" style="display: none;">
@@ -780,7 +763,7 @@
     </div>
 
     <!-- Pulsanti azione spostati nella stessa riga delle lingue -->
-    <!-- Controlli vista (solo Tema nella barra) -->
+    <!-- Controlli vista (Tema + Schermo) -->
     <div class="view-controls">
       <button id="themeToggle" title="Cambia tema"><i class="fas fa-sun"></i></button>
     </div>
@@ -811,11 +794,10 @@
         <i class="fas fa-layer-group"></i>
       </button>
     </div>
-  </div>
 
-  <!-- Pulsante Schermo Intero FUORI dalla language-selector 
-       così rimane visibile anche in modalità immersiva -->
-  <button id="immersiveToggle" title="Modalità immersiva"><i class="fas fa-expand"></i></button>
+    <!-- Pulsante Schermo Intero (immersive) portato nella stessa riga della barra in alto -->
+    <button id="immersiveToggle" title="Modalità immersiva"><i class="fas fa-expand"></i></button>
+  </div>
 
   <div class="checkbox-group">
     <label><input type="checkbox" id="liveTranslate"> 🔄 Traduci in tempo reale</label>
@@ -1013,6 +995,20 @@
   const exportHistoryBtn = document.getElementById('exportHistory');
   const importHistoryBtn = document.getElementById('importHistory');
 
+  // Glossary (missing declarations - caused ReferenceError)
+  const glossaryList = document.getElementById('glossaryList');
+  const addGlossaryBtn = document.getElementById('addGlossary');
+  const exportGlossaryBtn = document.getElementById('exportGlossary');
+  const importGlossaryBtn = document.getElementById('importGlossary');
+  const glossaryDialog = document.getElementById('glossaryDialog');
+  const closeGlossaryDialog = document.getElementById('closeGlossaryDialog');
+
+  // Export download buttons (missing - caused ReferenceError on .onclick assignment)
+  const downloadTxt = document.getElementById('downloadTxt');
+  const downloadPdf = document.getElementById('downloadPdf');
+  const downloadDocx = document.getElementById('downloadDocx');
+  const downloadEpub = document.getElementById('downloadEpub');
+
   // (All DOM references centralized cleanly above. Duplicate block removed.)
 
   let abortTranslation = false;
@@ -1156,12 +1152,6 @@
   }
   loadPrefs();
 
-  // Inizializza indicatore Modalità Libro
-  const bookModeIndicator = document.getElementById('bookModeIndicator');
-  if (bookModeIndicator && bookMode) {
-    bookModeIndicator.style.display = bookMode.checked ? 'inline' : 'none';
-  }
-
   // ---------- OFFLINE DETECTION ----------
   const offlineBanner = document.getElementById('offlineBanner');
   function updateOnlineStatus() {
@@ -1198,15 +1188,31 @@
     immersiveToggle.title = isImmersive ? 'Esci dalla modalità immersiva' : 'Modalità immersiva';
   };
 
-  // Export dropdown logic is attached earlier using centralized variables
+  // Export dropdown toggle (was missing - dropdown never opened)
+  if (downloadBtn && exportDropdown) {
+    downloadBtn.onclick = (e) => {
+      e.stopPropagation();
+      exportDropdown.classList.toggle('open');
+    };
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!exportDropdown.contains(e.target)) {
+        exportDropdown.classList.remove('open');
+      }
+    });
+    // Close dropdown after selecting an export option
+    exportDropdown.querySelectorAll('.dropdown-content button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        exportDropdown.classList.remove('open');
+      });
+    });
+  }
 
   rateSlider.addEventListener('input', () => localStorage.setItem('npc_rate', rateSlider.value));
   pitchSlider.addEventListener('input', () => localStorage.setItem('npc_pitch', pitchSlider.value));
   preserveFormatting.addEventListener('change', () => localStorage.setItem('npc_preserve', preserveFormatting.checked));
   bookMode.addEventListener('change', () => {
     localStorage.setItem('npc_bookMode', bookMode.checked);
-    const indicator = document.getElementById('bookModeIndicator');
-    if (indicator) indicator.style.display = bookMode.checked ? 'inline' : 'none';
   });
 
   // ---------- FUNZIONI BASE ----------
@@ -2657,3 +2663,4 @@
 </script>
 
 </body>
+</html>
