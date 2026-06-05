@@ -81,6 +81,8 @@ Le traduzioni vengono effettuate tramite API gratuite pubbliche:
 
 Questo progetto è rilasciato sotto licenza **MIT**.
 
+Vedi il file [LICENSE](LICENSE) per il testo completo.
+
 ---
 
 Fatto con 💜 per chi traduce libri, manuali, dialoghi di gioco e documenti.
