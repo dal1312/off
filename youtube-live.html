@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f0f17">
+<title>YouTube Live Translator - NPC Translator</title>
+<style>
+:root{--p:#a855f7;--s:#7c3aed;--bg:#0a0a0f;--card:#12121a;--card2:#1e1e2a;--txt:#e0e0ff;--dim:#a0a0cc;--ok:#4ade80;--err:#f87171;--bd:#2a2a3a}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;padding:18px}.app{max-width:1200px;margin:auto}.head{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.head h1{margin:0;font-size:clamp(1.35rem,4vw,2.2rem)}.badge{padding:7px 12px;border:1px solid var(--bd);border-radius:999px;background:var(--card)}.controls,.grid{display:grid;gap:12px}.controls{grid-template-columns:repeat(4,minmax(150px,1fr));margin:18px 0}.grid{grid-template-columns:1fr 1fr}select,button,textarea{font:inherit}select,button{min-height:46px;border-radius:10px;border:1px solid var(--bd);padding:9px 12px}select{background:var(--card2);color:var(--txt)}button{cursor:pointer;background:linear-gradient(135deg,var(--s),var(--p));color:white;font-weight:700}.stop{background:var(--card2)}.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px}.card h2{font-size:1rem;margin:0 0 10px}textarea{width:100%;min-height:330px;resize:vertical;background:var(--card2);color:var(--txt);border:1px solid var(--bd);border-radius:12px;padding:12px;line-height:1.5}.status{margin-top:12px;padding:10px 12px;background:var(--card);border:1px solid var(--bd);border-radius:12px;color:var(--dim)}.status.ok{color:var(--ok)}.status.err{color:var(--err)}.note{color:var(--dim);font-size:.9rem;line-height:1.45}.back{color:#d8b4fe;text-decoration:none}@media(max-width:800px){.controls{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}textarea{min-height:220px}}@media(max-width:480px){.controls{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main class="app">
+<div class="head"><div><a class="back" href="./index.html">← NPC Translator</a><h1>🎧 YouTube Live Translator</h1></div><span id="liveBadge" class="badge">● Inattivo</span></div>
+<p class="note">Apri un video YouTube in un'altra scheda, premi Avvia, seleziona quella scheda e abilita la condivisione audio. Il modulo acquisisce l'audio della scheda e prepara la pipeline live.</p>
+<section class="controls">
+<select id="source"><option value="it-IT">Italiano</option><option value="en-US">English</option><option value="es-ES">Español</option><option value="fr-FR">Français</option><option value="de-DE">Deutsch</option></select>
+<select id="target"><option value="it">→ Italiano</option><option value="en">→ English</option><option value="es">→ Español</option><option value="fr">→ Français</option><option value="de">→ Deutsch</option></select>
+<button id="start">▶ Avvia YouTube Live</button><button id="stop" class="stop" disabled>■ Stop</button>
+</section>
+<section class="grid"><div class="card"><h2>Trascrizione live</h2><textarea id="transcript" readonly placeholder="La voce riconosciuta apparirà qui..."></textarea></div><div class="card"><h2>Traduzione live</h2><textarea id="translation" readonly placeholder="La traduzione apparirà qui..."></textarea></div></section>
+<div id="status" class="status">Pronto. Usa Chrome/Edge desktop e seleziona “Condividi audio scheda”.</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);let stream=null,recognition=null,running=false,lastFinal='';
+function setStatus(t,type=''){const e=$('status');e.textContent=t;e.className='status '+type}
+async function translate(text){if(!text.trim())return '';const target=$('target').value;const source=$('source').value.split('-')[0];if(source===target)return text;try{const u='https://api.mymemory.translated.net/get?q='+encodeURIComponent(text)+'&langpair='+encodeURIComponent(source+'|'+target);const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);const d=await r.json();return d?.responseData?.translatedText||text}catch(e){setStatus('Trascrizione attiva; traduzione temporaneamente non disponibile: '+e.message,'err');return '[Traduzione non disponibile] '+text}}
+async function start(){try{stream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});const tracks=stream.getAudioTracks();if(!tracks.length){stream.getTracks().forEach(t=>t.stop());throw new Error('Nessun audio condiviso. Seleziona la scheda YouTube e attiva Condividi audio scheda.')}running=true;$('start').disabled=true;$('stop').disabled=false;$('liveBadge').textContent='● LIVE';$('liveBadge').style.color='#4ade80';setStatus('Audio scheda acquisito. Avvio riconoscimento vocale...','ok');stream.getTracks().forEach(t=>t.addEventListener('ended',stop));startRecognition()}catch(e){setStatus(e.message,'err')}}
+function startRecognition(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){setStatus('Audio acquisito, ma SpeechRecognition non è disponibile in questo browser. Usa Chrome/Edge desktop.','err');return}recognition=new SR();recognition.lang=$('source').value;recognition.continuous=true;recognition.interimResults=true;recognition.onresult=async ev=>{let interim='',final='';for(let i=ev.resultIndex;i<ev.results.length;i++){const txt=ev.results[i][0].transcript;if(ev.results[i].isFinal)final+=txt+' ';else interim+=txt}if(final){lastFinal+=(lastFinal?'\n':'')+final.trim();$('transcript').value=lastFinal+(interim?'\n'+interim:'');$('translation').value=await translate(lastFinal)}else $('transcript').value=lastFinal+(interim?'\n'+interim:'')};recognition.onerror=e=>setStatus('Riconoscimento: '+e.error,'err');recognition.onend=()=>{if(running)try{recognition.start()}catch{}};try{recognition.start()}catch(e){setStatus(e.message,'err')}}
+function stop(){running=false;if(recognition){try{recognition.stop()}catch{}recognition=null}if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}$('start').disabled=false;$('stop').disabled=true;$('liveBadge').textContent='● Inattivo';$('liveBadge').style.color='';setStatus('Sessione terminata.')}
+$('start').onclick=start;$('stop').onclick=stop;$('source').onchange=()=>{if(running){if(recognition)try{recognition.stop()}catch{}setTimeout(startRecognition,300)}};
+</script></body></html>
