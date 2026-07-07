@@ -1,12 +1,14 @@
 {
   "name": "NPC Translator",
   "short_name": "NPC Trans",
-  "description": "Traduttore avanzato con supporto PDF, EPUB, DOCX, OCR, sintesi vocale, glossario, batch e esportazione multi-formato",
-  "start_url": "index.html",
+  "description": "Traduttore avanzato per testi, libri, RPG e documenti.",
+  "lang": "it",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0a0a0f",
   "theme_color": "#0f0f17",
-  "orientation": "portrait",
+  "orientation": "any",
   "icons": [
     {
       "src": "icons/icon-192.png",
