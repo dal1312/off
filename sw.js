@@ -1,8 +1,10 @@
-const CACHE_NAME = 'npc-translator-v5';
+const CACHE_NAME = 'npc-translator-v6';
 
 const CORE_ASSETS = [
   './',
   './index.html',
+  './youtube-live.html',
+  './diagnostics.html',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png'
@@ -32,6 +34,20 @@ self.addEventListener('fetch', event => {
   const request = event.request;
 
   if (request.method !== 'GET') return;
+
+  const url = new URL(request.url);
+
+  // Non mettere in cache richieste esterne: CDN/API traduzione restano online-only.
+  if (url.origin !== self.location.origin) {
+    event.respondWith(
+      fetch(request).catch(() => new Response('Offline', {
+        status: 503,
+        statusText: 'Offline',
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+      }))
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(request).then(cached => {
