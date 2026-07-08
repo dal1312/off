@@ -1,90 +1,153 @@
 # 🏴‍☠️ NPC Translator
 
-**Traduttore avanzato per testi, libri, RPG e documenti**
+**Traduttore avanzato per testi, libri, RPG, documenti e workflow live.**
 
-Un'applicazione web moderna, leggera e potente per tradurre testi in molteplici lingue. Supporta l'importazione di file complessi (PDF, EPUB, DOCX), OCR da immagini, sintesi vocale, glossario personalizzato, modalità libro per coerenza su testi lunghi e tanto altro.
+NPC Translator è una PWA leggera basata su HTML/CSS/JavaScript vanilla. Nasce per tradurre testi lunghi, libri, file e dialoghi, ma include anche un modulo sperimentale per YouTube/Live in italiano.
 
-Pensato per essere **facile da usare** (è un singolo file HTML) e **installabile come PWA**.
-
-![Versione](https://img.shields.io/badge/version-0.5.0--serious-purple)
+![Versione](https://img.shields.io/badge/version-0.6.0--stability-purple)
 ![PWA](https://img.shields.io/badge/PWA-support-blue)
-![Offline](https://img.shields.io/badge/Offline-ready-green)
+![Offline UI](https://img.shields.io/badge/Offline-UI-green)
+![Static](https://img.shields.io/badge/GitHub%20Pages-ready-black)
 
-## ✨ Funzionalità principali
+## Moduli del progetto
 
-- **Import multi-formato**: PDF, EPUB, DOCX, TXT e immagini (con OCR)
-- **Esportazione** in TXT, PDF, DOCX ed EPUB con metadati
-- **Modalità Libro**: traduzione intelligente capitolo per capitolo con contesto per mantenere coerenza
-- **Glossario personalizzato**: definisci termini, nomi propri e frasi da tradurre sempre allo stesso modo
-- **Cronologia** delle traduzioni con ricerca e import/export
-- **Sintesi vocale**: ascolta il testo originale e la traduzione
-- **Dettatura vocale** (microfono)
-- **OCR** da immagini e foto
-- **Traduzione batch**: carica più file e ottieni un ZIP con le traduzioni
-- **Traduzione in tempo reale** (opzionale)
-- **Preserva formattazione** (sperimentale per DOCX)
-- **PWA installabile** + Service Worker per funzionamento offline dell'interfaccia
-- **Tema chiaro/scuro** + **Modalità immersiva**
-- Supporto lingue RTL (Arabo, Ebraico, Yiddish)
-- Scorciatoie da tastiera
+| Modulo | File/cartella | Stato | Descrizione |
+|---|---|---:|---|
+| PWA principale | `index.html` | Attivo | Traduzione testi/file, glossario, cronologia, export, OCR, TTS. |
+| YouTube Live gratuito | `youtube-live.html` | Sperimentale | Microfono → riconoscimento vocale browser → traduzione free → voce italiana. |
+| Diagnostica | `diagnostics.html` | Attivo | Verifica browser, PWA, provider gratuiti e voce italiana. |
+| Backend opzionale | `backend/` | Separato | Server Node.js/Fastify per futura trascrizione/traduzione AI lato server. |
 
-### Lingue supportate
-Auto-rilevamento +: Inglese, Italiano, Latino, Yiddish, Ebraico, Arabo, Francese, Spagnolo, Tedesco, Portoghese, Russo, Cinese, Giapponese.
+## Funzionalità principali
 
-## 🚀 Come usarlo
+- Import multi-formato: PDF, EPUB, DOCX, TXT e immagini con OCR.
+- Esportazione in TXT, PDF, DOCX ed EPUB.
+- Modalità Libro per testi lunghi e dialoghi.
+- Glossario personalizzato per nomi, termini tecnici e frasi ricorrenti.
+- Cronologia locale con IndexedDB.
+- Sintesi vocale e dettatura vocale dove supportate dal browser.
+- Traduzione batch con ZIP.
+- Traduzione live opzionale.
+- PWA installabile con Service Worker.
+- Tema chiaro/scuro, modalità immersiva e supporto RTL.
 
-### Modalità più semplice (locale)
-1. Scarica o clona questo repository
-2. Apri il file `index.html` con qualsiasi browser moderno
+## Lingue supportate
 
-### Su GitHub Pages (consigliato per uso continuativo)
-1. Crea un repository su GitHub e carica tutti i file (`index.html`, `manifest.json`, `sw.js` + cartella `icons/`)
-2. Vai su **Settings → Pages**
-3. Seleziona:
-   - Source: **Deploy from a branch**
-   - Branch: `main` (o `master`)
-   - Folder: `/ (root)`
-4. Salva. Il tuo traduttore sarà disponibile all'indirizzo:
-   `https://TUO-USERNAME.github.io/NOME-REPO/`
+Auto-rilevamento più: Inglese, Italiano, Latino, Yiddish, Ebraico, Arabo, Francese, Spagnolo, Tedesco, Portoghese, Russo, Cinese, Giapponese.
 
-Puoi anche installarlo come app dal browser (pulsante "Installa" o "Aggiungi alla schermata Home").
+## Avvio rapido
 
-## 🛠️ Tecnologie utilizzate
+### Locale
 
-- **HTML + CSS + JavaScript vanilla** (tutto in un singolo file per massima portabilità)
-- CDN esterni (nessuna dipendenza da installare):
-  - [PDF.js](https://mozilla.github.io/pdf.js/) – estrazione testo PDF
-  - [JSZip](https://stuk.github.io/jszip/) – creazione ZIP e file DOCX/EPUB
-  - [Mammoth.js](https://github.com/mwilliamson/mammoth.js) – lettura DOCX
-  - [jsPDF](https://github.com/parallax/jsPDF) – generazione PDF
-  - [Tesseract.js](https://github.com/naptha/tesseract.js) – OCR
-- Service Worker per cache PWA
-- Web Speech API per sintesi e riconoscimento vocale
+```bash
+git clone https://github.com/dal1312/off.git
+cd off
+```
 
-Le traduzioni vengono effettuate tramite API gratuite pubbliche:
-- Google Translate (senza chiave)
-- MyMemory
-- Lingva.ml
+Poi apri `index.html` nel browser.
 
-## 📋 Note importanti
+### GitHub Pages
 
-- **La traduzione richiede connessione internet** (le API sono online). L'interfaccia e le funzioni di base funzionano offline grazie alla PWA.
-- Per testi molto lunghi (libri), attiva la **Modalità Libro** per risultati più coerenti.
-- Usa il **Glossario** per mantenere nomi di personaggi, luoghi e termini tecnici sempre uguali.
-- Il file è progettato per essere self-contained: basta `index.html` per usarlo ovunque.
+1. Vai su **Settings → Pages**.
+2. Source: **Deploy from a branch**.
+3. Branch: `main`.
+4. Folder: `/ (root)`.
+5. Apri:
 
-## 🖼️ Screenshot
+```text
+https://dal1312.github.io/off/
+```
 
-*(Aggiungi qui degli screenshot dell'interfaccia una volta che li fai)*
+## Pagine operative
 
-## 📄 Licenza
+```text
+index.html          → PWA principale
+youtube-live.html   → YouTube/Live gratuito browser-only
+diagnostics.html    → test ambiente e provider
+```
 
-Questo progetto è rilasciato sotto licenza **MIT**.
+## Traduzione gratuita
 
-Vedi il file [LICENSE](LICENSE) per il testo completo.
+La PWA principale usa provider pubblici gratuiti con fallback:
+
+1. Google Translate endpoint non ufficiale;
+2. MyMemory;
+3. Lingva.
+
+Questi provider possono avere limiti, timeout o blocchi temporanei. Per testi molto lunghi conviene usare chunk piccoli, Modalità Libro e salvataggio progressivo.
+
+## YouTube Live gratuito
+
+Il modulo `youtube-live.html` non cattura direttamente YouTube dal browser. Usa il microfono o un sistema audio configurato dal PC.
+
+Pipeline:
+
+```text
+Audio vicino al microfono / stereo mix
+→ SpeechRecognition browser
+→ MyMemory
+→ speechSynthesis italiana
+```
+
+Consulta `docs/YOUTUBE_LIVE.md` per dettagli tecnici, limiti e roadmap.
+
+## Diagnostica
+
+Apri `diagnostics.html` per verificare:
+
+- SpeechRecognition;
+- sintesi vocale;
+- IndexedDB;
+- Cache API / Service Worker;
+- provider gratuiti;
+- voce italiana disponibile.
+
+Consulta `docs/DIAGNOSTICS.md` per l'interpretazione dei risultati.
+
+## Backend opzionale
+
+La cartella `backend/` contiene un server Node.js/Fastify per una modalità live avanzata con OpenAI.
+
+Avvio locale:
+
+```bash
+cd backend
+cp .env.example .env
+npm install
+npm run dev
+```
+
+Health check:
+
+```text
+http://localhost:8787/health
+```
+
+Il backend è opzionale e non serve per usare la PWA statica su GitHub Pages.
+
+## Tecnologie
+
+- HTML, CSS e JavaScript vanilla.
+- PDF.js per estrazione testo PDF.
+- Mammoth.js per DOCX.
+- JSZip per ZIP/DOCX/EPUB.
+- jsPDF per PDF.
+- Tesseract.js per OCR.
+- IndexedDB per cronologia, glossario e progetti.
+- Web Speech API per voce e dettatura.
+- Fastify/OpenAI solo nel backend opzionale.
+
+## Note tecniche
+
+- L'interfaccia PWA può funzionare offline dopo il primo caricamento.
+- La traduzione richiede internet perché i provider sono online.
+- Le API gratuite non vanno trattate come servizio garantito.
+- La chiave OpenAI, se usata, deve restare solo nel backend e mai nei file statici.
+
+## Licenza
+
+Questo progetto è rilasciato sotto licenza MIT.
 
 ---
 
-Fatto con 💜 per chi traduce libri, manuali, dialoghi di gioco e documenti.
-
-Se ti piace il progetto, metti una ⭐ su GitHub!
+Fatto con 💜 per chi traduce libri, manuali, dialoghi di gioco, documenti e contenuti live.
