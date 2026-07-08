@@ -2,9 +2,9 @@
 
 **Traduttore avanzato per testi, libri, RPG, documenti e workflow live.**
 
-NPC Translator è una PWA leggera basata su HTML/CSS/JavaScript vanilla. Nasce per tradurre testi lunghi, libri, file e dialoghi, ma include anche un modulo sperimentale per YouTube/Live in italiano.
+NPC Translator è una PWA leggera basata su HTML/CSS/JavaScript vanilla. Nasce per tradurre testi lunghi, libri, file e dialoghi, ma include anche moduli sperimentali per YouTube/Live in italiano.
 
-![Versione](https://img.shields.io/badge/version-0.6.0--stability-purple)
+![Versione](https://img.shields.io/badge/version-0.7.0--screen--ocr-purple)
 ![PWA](https://img.shields.io/badge/PWA-support-blue)
 ![Offline UI](https://img.shields.io/badge/Offline-UI-green)
 ![Static](https://img.shields.io/badge/GitHub%20Pages-ready-black)
@@ -15,6 +15,7 @@ NPC Translator è una PWA leggera basata su HTML/CSS/JavaScript vanilla. Nasce p
 |---|---|---:|---|
 | PWA principale | `index.html` | Attivo | Traduzione testi/file, glossario, cronologia, export, OCR, TTS. |
 | YouTube Live gratuito | `youtube-live.html` | Sperimentale | Microfono → riconoscimento vocale browser → traduzione free → voce italiana. |
+| YouTube sottotitoli da schermo | `youtube-subtitles-ocr.html` | Sperimentale | Screen Capture → OCR sottotitoli video → traduzione italiana. |
 | Diagnostica | `diagnostics.html` | Attivo | Verifica browser, PWA, provider gratuiti e voce italiana. |
 | Backend opzionale | `backend/` | Separato | Server Node.js/Fastify per futura trascrizione/traduzione AI lato server. |
 
@@ -28,6 +29,7 @@ NPC Translator è una PWA leggera basata su HTML/CSS/JavaScript vanilla. Nasce p
 - Sintesi vocale e dettatura vocale dove supportate dal browser.
 - Traduzione batch con ZIP.
 - Traduzione live opzionale.
+- Lettura sottotitoli video da schermo con OCR.
 - PWA installabile con Service Worker.
 - Tema chiaro/scuro, modalità immersiva e supporto RTL.
 
@@ -61,9 +63,10 @@ https://dal1312.github.io/off/
 ## Pagine operative
 
 ```text
-index.html          → PWA principale
-youtube-live.html   → YouTube/Live gratuito browser-only
-diagnostics.html    → test ambiente e provider
+index.html                  → PWA principale
+youtube-live.html           → YouTube/Live gratuito via microfono
+youtube-subtitles-ocr.html  → Lettura sottotitoli da schermo con OCR
+diagnostics.html            → test ambiente e provider
 ```
 
 ## Traduzione gratuita
@@ -78,7 +81,7 @@ Questi provider possono avere limiti, timeout o blocchi temporanei. Per testi mo
 
 ## YouTube Live gratuito
 
-Il modulo `youtube-live.html` non cattura direttamente YouTube dal browser. Usa il microfono o un sistema audio configurato dal PC.
+Il modulo `youtube-live.html` usa il microfono o un sistema audio configurato dal PC.
 
 Pipeline:
 
@@ -90,6 +93,22 @@ Audio vicino al microfono / stereo mix
 ```
 
 Consulta `docs/YOUTUBE_LIVE.md` per dettagli tecnici, limiti e roadmap.
+
+## YouTube sottotitoli da schermo
+
+Il modulo `youtube-subtitles-ocr.html` legge i sottotitoli visibili nel video tramite cattura schermo autorizzata dall'utente.
+
+Pipeline:
+
+```text
+Scheda/finestra YouTube condivisa
+→ ritaglio zona sottotitoli
+→ OCR Tesseract.js
+→ MyMemory
+→ overlay italiano nella pagina
+```
+
+Consulta `docs/SCREEN_SUBTITLES_OCR.md` per procedura, limiti e regolazione OCR.
 
 ## Diagnostica
 
@@ -132,9 +151,10 @@ Il backend è opzionale e non serve per usare la PWA statica su GitHub Pages.
 - Mammoth.js per DOCX.
 - JSZip per ZIP/DOCX/EPUB.
 - jsPDF per PDF.
-- Tesseract.js per OCR.
+- Tesseract.js per OCR documenti e sottotitoli da schermo.
 - IndexedDB per cronologia, glossario e progetti.
 - Web Speech API per voce e dettatura.
+- Screen Capture API per lettura sottotitoli da schermo.
 - Fastify/OpenAI solo nel backend opzionale.
 
 ## Note tecniche
@@ -143,6 +163,7 @@ Il backend è opzionale e non serve per usare la PWA statica su GitHub Pages.
 - La traduzione richiede internet perché i provider sono online.
 - Le API gratuite non vanno trattate come servizio garantito.
 - La chiave OpenAI, se usata, deve restare solo nel backend e mai nei file statici.
+- La lettura sottotitoli da schermo richiede consenso esplicito alla cattura schermo.
 
 ## Licenza
 
