@@ -1,9 +1,10 @@
-const CACHE_NAME = 'npc-translator-v6';
+const CACHE_NAME = 'npc-translator-v7';
 
 const CORE_ASSETS = [
   './',
   './index.html',
   './youtube-live.html',
+  './youtube-subtitles-ocr.html',
   './diagnostics.html',
   './manifest.json',
   './icons/icon-192.png',
