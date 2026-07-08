@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0f0f17">
+  <title>YouTube Screen Subtitle OCR · NPC Translator</title>
+  <style>
+    :root{--p:#a855f7;--s:#7c3aed;--bg:#0a0a0f;--c:#12121a;--c2:#1e1e2a;--t:#e0e0ff;--d:#a0a0cc;--ok:#4ade80;--er:#f87171;--warn:#facc15;--b:#2a2a3a}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#21123f,var(--bg) 42%);color:var(--t);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;padding:18px;line-height:1.42}.app{max-width:1280px;margin:auto}.head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}h1{margin:.2rem 0}.links{display:flex;gap:12px;flex-wrap:wrap}.back,.links a{color:#d8b4fe;text-decoration:none}.note,.card,.status,.toolbar{background:rgba(18,18,26,.94);border:1px solid var(--b);border-radius:16px;padding:14px}.note{color:var(--d)}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.toolbar button{min-width:120px}.grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);gap:14px}.previewWrap{position:relative;background:#050508;border:1px solid var(--b);border-radius:16px;overflow:hidden;min-height:360px}.preview{width:100%;display:block;max-height:68vh;background:#000}.cropBox{position:absolute;left:8%;right:8%;bottom:7%;height:24%;border:2px solid rgba(168,85,247,.95);box-shadow:0 0 0 9999px rgba(0,0,0,.28);border-radius:8px;pointer-events:none}.translatedOverlay{position:absolute;left:5%;right:5%;bottom:2%;padding:12px 16px;text-align:center;font-size:clamp(1.1rem,2.1vw,2.2rem);font-weight:900;line-height:1.18;color:white;text-shadow:0 3px 10px #000;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.62));border-radius:12px;pointer-events:none}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.control{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:10px}.control label{display:block;font-size:.85rem;color:var(--d);margin-bottom:6px}.control input,.control select{width:100%}button,input,select,textarea{font:inherit;border:1px solid var(--b);border-radius:12px;padding:10px;background:var(--c2);color:var(--t)}button{background:linear-gradient(135deg,var(--s),var(--p));font-weight:800;cursor:pointer}button.secondary{background:var(--c2)}button:disabled{opacity:.55;cursor:not-allowed}.status{margin-top:12px;color:var(--d)}.ok{color:var(--ok)}.err{color:var(--er)}.warn{color:var(--warn)}textarea{width:100%;min-height:130px;resize:vertical;line-height:1.4}.side{display:grid;gap:12px}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.small{font-size:.86rem;color:var(--d)}.hiddenCanvas{width:100%;max-height:150px;border:1px solid var(--b);border-radius:10px;background:#000}.badge{font-weight:900}.kv{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid var(--b);padding:6px 0}.kv:last-child{border-bottom:0}@media(max-width:980px){.grid{grid-template-columns:1fr}.controls{grid-template-columns:1fr 1fr}}@media(max-width:560px){.controls{grid-template-columns:1fr}.toolbar>*{width:100%}}
+  </style>
+</head>
+<body>
+<main class="app">
+  <div class="head">
+    <div>
+      <a class="back" href="./index.html">← NPC Translator</a>
+      <h1>🖥️ YouTube sottotitoli da schermo → Italiano</h1>
+      <p class="small">Screen Capture autorizzato → ritaglio sottotitoli → OCR → traduzione gratuita.</p>
+    </div>
+    <div class="links">
+      <a href="./youtube-live.html">🎧 Live microfono</a>
+      <a href="./diagnostics.html">🧪 Diagnostica</a>
+      <b id="badge" class="badge">● Inattivo</b>
+    </div>
+  </div>
+
+  <p class="note">
+    Apri YouTube con i sottotitoli attivi, premi <strong>Condividi schermo</strong> e scegli la scheda/finestra con il video. Questa pagina non legge YouTube internamente: legge i pixel che autorizzi dal tuo schermo e traduce il testo OCR rilevato nella zona sottotitoli.
+  </p>
+
+  <section class="toolbar">
+    <button id="startCapture">1 · Condividi schermo</button>
+    <button id="startScan" disabled>2 · Avvia OCR</button>
+    <button id="stopScan" disabled>Stop</button>
+    <button id="singleScan" class="secondary" disabled>Scansione singola</button>
+    <button id="copyIt" class="secondary">Copia IT</button>
+    <button id="downloadTxt" class="secondary">Scarica TXT</button>
+    <button id="clearAll" class="secondary">Pulisci</button>
+  </section>
+
+  <section class="grid">
+    <div>
+      <div class="previewWrap">
+        <video id="preview" class="preview" autoplay muted playsinline></video>
+        <div id="cropBox" class="cropBox"></div>
+        <div id="translatedOverlay" class="translatedOverlay">Traduzione italiana qui</div>
+      </div>
+      <div class="status" id="status">Pronto. Condividi la scheda/finestra YouTube con sottotitoli visibili.</div>
+    </div>
+
+    <aside class="side">
+      <div class="card">
+        <h2>Area OCR</h2>
+        <div class="controls">
+          <div class="control"><label>Altezza zona sottotitoli: <span id="cropHeightLabel">24</span>%</label><input id="cropHeight" type="range" min="10" max="45" value="24"></div>
+          <div class="control"><label>Distanza dal basso: <span id="cropBottomLabel">7</span>%</label><input id="cropBottom" type="range" min="0" max="30" value="7"></div>
+          <div class="control"><label>Margine laterale: <span id="cropSideLabel">8</span>%</label><input id="cropSide" type="range" min="0" max="25" value="8"></div>
+          <div class="control"><label>Scala OCR: <span id="scaleLabel">2</span>x</label><input id="scale" type="range" min="1" max="4" value="2"></div>
+          <div class="control"><label>Intervallo scansione</label><select id="intervalMs"><option value="900">0.9 s</option><option value="1200" selected>1.2 s</option><option value="1600">1.6 s</option><option value="2200">2.2 s</option></select></div>
+          <div class="control"><label>Lingua OCR</label><select id="ocrLang"><option value="eng" selected>Inglese</option><option value="ita">Italiano</option><option value="spa">Spagnolo</option><option value="fra">Francese</option><option value="deu">Tedesco</option><option value="por">Portoghese</option><option value="eng+ita">Inglese + Italiano</option></select></div>
+          <div class="control"><label>Lingua sottotitoli</label><select id="sourceLang"><option value="en" selected>Inglese</option><option value="es">Spagnolo</option><option value="fr">Francese</option><option value="de">Tedesco</option><option value="pt">Portoghese</option><option value="it">Italiano</option><option value="auto">Auto</option></select></div>
+          <div class="control"><label>Filtro OCR</label><select id="ocrMode"><option value="default" selected>Normale</option><option value="threshold">Contrasto alto</option><option value="invert">Inverti colori</option></select></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Ritaglio OCR</h2>
+        <canvas id="cropCanvas" class="hiddenCanvas"></canvas>
+        <div class="small">Se il testo non viene letto, allarga la zona o aumenta la scala OCR.</div>
+      </div>
+
+      <div class="card">
+        <h2>Ultimo OCR</h2>
+        <textarea id="ocrText" readonly placeholder="Testo letto dallo schermo..."></textarea>
+      </div>
+
+      <div class="card">
+        <h2>Traduzione italiana</h2>
+        <textarea id="translation" readonly placeholder="Traduzione..."></textarea>
+      </div>
+
+      <div class="card">
+        <h2>Stato tecnico</h2>
+        <div class="kv"><span>Screen Capture</span><b id="capSupport">...</b></div>
+        <div class="kv"><span>Tesseract.js</span><b id="ocrSupport">non caricato</b></div>
+        <div class="kv"><span>Provider</span><b>MyMemory</b></div>
+        <div class="kv"><span>Ultima scansione</span><b id="lastScan">mai</b></div>
+      </div>
+    </aside>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const video = $('preview');
+const cropCanvas = $('cropCanvas');
+const ctx = cropCanvas.getContext('2d', { willReadFrequently: true });
+let stream = null;
+let scanning = false;
+let timer = null;
+let busy = false;
+let tesseractLoaded = false;
+let lastCleanText = '';
+let historyRows = [];
+function setStatus(text, cls=''){ const el=$('status'); el.textContent=text; el.className='status '+cls; }
+function setBadge(live){ $('badge').textContent = live ? '● OCR LIVE' : '● Inattivo'; $('badge').style.color = live ? '#4ade80' : ''; }
+function esc(s){ return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
+function normalizeText(text){
+  return String(text || '')
+    .replace(/\s+/g,' ')
+    .replace(/[|_~`^]+/g,'')
+    .replace(/^[\W\d_]+|[\W\d_]+$/g,'')
+    .trim();
+}
+function updateCropBox(){
+  const h = Number($('cropHeight').value);
+  const b = Number($('cropBottom').value);
+  const s = Number($('cropSide').value);
+  $('cropHeightLabel').textContent = h;
+  $('cropBottomLabel').textContent = b;
+  $('cropSideLabel').textContent = s;
+  $('scaleLabel').textContent = $('scale').value;
+  const box = $('cropBox');
+  box.style.left = s + '%';
+  box.style.right = s + '%';
+  box.style.bottom = b + '%';
+  box.style.height = h + '%';
+}
+['cropHeight','cropBottom','cropSide','scale'].forEach(id => $(id).addEventListener('input', updateCropBox));
+updateCropBox();
+$('capSupport').textContent = navigator.mediaDevices?.getDisplayMedia ? 'OK' : 'NO';
+$('capSupport').className = navigator.mediaDevices?.getDisplayMedia ? 'ok' : 'err';
+async function loadTesseract(){
+  if(tesseractLoaded) return;
+  setStatus('Caricamento OCR Tesseract.js...', 'warn');
+  await new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://unpkg.com/tesseract.js@5/dist/tesseract.min.js';
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('Impossibile caricare Tesseract.js'));
+    document.head.appendChild(s);
+  });
+  tesseractLoaded = true;
+  $('ocrSupport').textContent = 'OK';
+  $('ocrSupport').className = 'ok';
+}
+async function startCapture(){
+  if(!navigator.mediaDevices?.getDisplayMedia){ setStatus('Screen Capture non supportato. Usa Chrome/Edge desktop.', 'err'); return; }
+  try{
+    stream = await navigator.mediaDevices.getDisplayMedia({ video: { cursor: 'never', frameRate: 10 }, audio: false });
+    video.srcObject = stream;
+    await video.play();
+    stream.getVideoTracks()[0].addEventListener('ended', stopAll);
+    $('startScan').disabled = false;
+    $('singleScan').disabled = false;
+    setStatus('Schermo acquisito. Ora avvia OCR o fai una scansione singola.', 'ok');
+  }catch(e){ setStatus('Condivisione schermo annullata o non disponibile: ' + e.message, 'err'); }
+}
+function getCropRect(){
+  const vw = video.videoWidth || 1280;
+  const vh = video.videoHeight || 720;
+  const side = Number($('cropSide').value) / 100;
+  const heightPct = Number($('cropHeight').value) / 100;
+  const bottomPct = Number($('cropBottom').value) / 100;
+  const x = Math.round(vw * side);
+  const w = Math.round(vw * (1 - side * 2));
+  const h = Math.round(vh * heightPct);
+  const y = Math.max(0, Math.round(vh - (vh * bottomPct) - h));
+  return {x,y,w,h};
+}
+function drawPreparedCrop(){
+  if(!video.videoWidth || !video.videoHeight) throw new Error('Video capture non pronto');
+  const rect = getCropRect();
+  const scale = Number($('scale').value);
+  cropCanvas.width = Math.max(1, rect.w * scale);
+  cropCanvas.height = Math.max(1, rect.h * scale);
+  ctx.imageSmoothingEnabled = true;
+  ctx.drawImage(video, rect.x, rect.y, rect.w, rect.h, 0, 0, cropCanvas.width, cropCanvas.height);
+  const mode = $('ocrMode').value;
+  if(mode !== 'default'){
+    const img = ctx.getImageData(0,0,cropCanvas.width,cropCanvas.height);
+    const d = img.data;
+    for(let i=0;i<d.length;i+=4){
+      const g = Math.round(d[i]*0.299 + d[i+1]*0.587 + d[i+2]*0.114);
+      let v = g;
+      if(mode === 'threshold') v = g > 150 ? 255 : 0;
+      if(mode === 'invert') v = 255 - g;
+      d[i]=d[i+1]=d[i+2]=v;
+    }
+    ctx.putImageData(img,0,0);
+  }
+}
+async function translateToItalian(text){
+  const src = $('sourceLang').value;
+  if(src === 'it') return text;
+  const langpair = (src === 'auto' ? 'en' : src) + '|it';
+  const ctrl = new AbortController();
+  const timeout = setTimeout(()=>ctrl.abort(), 9000);
+  try{
+    const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=' + encodeURIComponent(langpair);
+    const res = await fetch(url, { signal: ctrl.signal });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    return data?.responseData?.translatedText || text;
+  } finally { clearTimeout(timeout); }
+}
+async function scanOnce(){
+  if(busy) return;
+  if(!stream){ setStatus('Prima condividi lo schermo.', 'warn'); return; }
+  busy = true;
+  try{
+    await loadTesseract();
+    drawPreparedCrop();
+    $('lastScan').textContent = new Date().toLocaleTimeString();
+    setStatus('OCR in corso...', 'warn');
+    const lang = $('ocrLang').value;
+    const result = await Tesseract.recognize(cropCanvas, lang, { logger: m => { if(m.status) setStatus('OCR: ' + m.status + (m.progress ? ' ' + Math.round(m.progress*100) + '%' : ''), 'warn'); } });
+    const clean = normalizeText(result?.data?.text || '');
+    if(!clean || clean.length < 3){ setStatus('Nessun sottotitolo leggibile nella zona OCR.', 'warn'); return; }
+    $('ocrText').value = clean;
+    if(clean.toLowerCase() === lastCleanText.toLowerCase()){ setStatus('Testo già letto, nessuna nuova traduzione.', 'ok'); return; }
+    lastCleanText = clean;
+    setStatus('Traduzione in italiano...', 'warn');
+    const it = await translateToItalian(clean);
+    $('translation').value = it;
+    $('translatedOverlay').textContent = it;
+    historyRows.push({ time: new Date().toLocaleTimeString(), original: clean, italian: it });
+    if(historyRows.length > 200) historyRows.shift();
+    setStatus('Sottotitolo letto e tradotto.', 'ok');
+  }catch(e){ setStatus('Errore OCR/traduzione: ' + e.message, 'err'); }
+  finally{ busy = false; }
+}
+function startScan(){
+  if(!stream){ setStatus('Prima condividi lo schermo.', 'warn'); return; }
+  scanning = true;
+  setBadge(true);
+  $('startScan').disabled = true;
+  $('stopScan').disabled = false;
+  scanOnce();
+  timer = setInterval(scanOnce, Number($('intervalMs').value));
+}
+function stopScan(){
+  scanning = false;
+  setBadge(false);
+  clearInterval(timer);
+  timer = null;
+  $('startScan').disabled = !stream;
+  $('stopScan').disabled = true;
+  setStatus('OCR fermato.');
+}
+function stopAll(){
+  stopScan();
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream = null; }
+  video.srcObject = null;
+  $('startScan').disabled = true;
+  $('singleScan').disabled = true;
+  setStatus('Condivisione schermo terminata.');
+}
+function downloadTxt(){
+  const lines = ['NPC Translator · Screen Subtitle OCR', 'Data: ' + new Date().toLocaleString(), ''];
+  for(const row of historyRows){ lines.push('['+row.time+'] OCR: ' + row.original); lines.push('['+row.time+'] IT : ' + row.italian); lines.push(''); }
+  if(historyRows.length === 0){ lines.push('OCR: ' + $('ocrText').value); lines.push('IT : ' + $('translation').value); }
+  const blob = new Blob([lines.join('\n')], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'npc-youtube-subtitles-ocr-' + new Date().toISOString().slice(0,10) + '.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+$('startCapture').onclick = startCapture;
+$('startScan').onclick = startScan;
+$('stopScan').onclick = stopScan;
+$('singleScan').onclick = scanOnce;
+$('copyIt').onclick = async () => { try{ await navigator.clipboard.writeText($('translation').value); setStatus('Traduzione copiata.', 'ok'); }catch(e){ setStatus('Copia non riuscita: ' + e.message, 'err'); } };
+$('downloadTxt').onclick = downloadTxt;
+$('clearAll').onclick = () => { $('ocrText').value=''; $('translation').value=''; $('translatedOverlay').textContent='Traduzione italiana qui'; lastCleanText=''; historyRows=[]; setStatus('Pulito.'); };
+$('intervalMs').onchange = () => { if(scanning){ stopScan(); startScan(); } };
+window.addEventListener('beforeunload', () => { if(stream) stream.getTracks().forEach(t=>t.stop()); });
+</script>
+</body>
+</html>
