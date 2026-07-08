@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0f0f17">
+  <title>NPC Translator · Diagnostica</title>
+  <style>
+    :root{--p:#a855f7;--s:#7c3aed;--bg:#0a0a0f;--c:#12121a;--c2:#1e1e2a;--t:#e0e0ff;--d:#a0a0cc;--ok:#4ade80;--warn:#facc15;--er:#f87171;--b:#2a2a3a}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#1e1035,var(--bg) 40%);color:var(--t);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;padding:18px;line-height:1.45}.app{max-width:1100px;margin:auto}.top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}a{color:#d8b4fe;text-decoration:none}.card{background:rgba(18,18,26,.94);border:1px solid var(--b);border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 12px 34px rgba(0,0,0,.25)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.row{display:flex;justify-content:space-between;gap:12px;padding:10px;border-bottom:1px solid var(--b)}.row:last-child{border-bottom:0}.label{color:var(--d)}.ok{color:var(--ok);font-weight:800}.warn{color:var(--warn);font-weight:800}.err{color:var(--er);font-weight:800}button,select,input{font:inherit;border:1px solid var(--b);border-radius:12px;padding:10px;background:var(--c2);color:var(--t)}button{cursor:pointer;background:linear-gradient(135deg,var(--s),var(--p));font-weight:800}.buttons{display:flex;gap:10px;flex-wrap:wrap}.log{white-space:pre-wrap;background:#050508;border:1px solid var(--b);border-radius:12px;padding:12px;min-height:90px;color:#d8d8ff;overflow:auto}.muted{color:var(--d)}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main class="app">
+  <div class="top">
+    <div>
+      <a href="./index.html">← NPC Translator</a>
+      <h1>🧪 Diagnostica sistema</h1>
+      <p class="muted">Controllo rapido di PWA, browser, voce, storage e provider gratuiti.</p>
+    </div>
+    <a href="./youtube-live.html">🎧 YouTube Live gratuito</a>
+  </div>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Ambiente browser</h2>
+      <div id="browserRows"></div>
+    </div>
+    <div class="card">
+      <h2>PWA / installazione</h2>
+      <div id="pwaRows"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Test traduzione provider gratuiti</h2>
+    <p class="muted">Esegue una prova breve con testo: <code>Hello world</code> → italiano. I provider pubblici possono avere limiti o blocchi temporanei.</p>
+    <div class="buttons">
+      <button id="testMyMemory">Test MyMemory</button>
+      <button id="testGoogle">Test Google endpoint non ufficiale</button>
+      <button id="testLingva">Test Lingva</button>
+      <button id="clearLog">Pulisci log</button>
+    </div>
+    <pre id="log" class="log">Pronto.</pre>
+  </section>
+
+  <section class="card">
+    <h2>Test voce italiana</h2>
+    <p class="muted">Verifica se il dispositivo ha una voce TTS italiana disponibile.</p>
+    <div class="buttons">
+      <select id="voiceSelect"></select>
+      <button id="speakTest">Prova voce</button>
+    </div>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const row = (label, state, detail='') => `<div class="row"><span class="label">${label}</span><span class="${state.cls}">${state.text}${detail ? ' · <span class="muted">'+detail+'</span>' : ''}</span></div>`;
+const ok = {cls:'ok', text:'OK'};
+const warn = {cls:'warn', text:'LIMITATO'};
+const err = {cls:'err', text:'NO'};
+const hasSR = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+const hasSW = 'serviceWorker' in navigator;
+const hasIDB = 'indexedDB' in window;
+const hasSpeech = 'speechSynthesis' in window;
+const hasShare = 'share' in navigator;
+const hasSavePicker = 'showSaveFilePicker' in window;
+const isSecure = location.protocol === 'https:' || location.hostname === 'localhost';
+function paintStaticChecks(){
+  $('browserRows').innerHTML = [
+    row('Connessione', navigator.onLine ? ok : err, navigator.onLine ? 'online' : 'offline'),
+    row('Contesto sicuro HTTPS', isSecure ? ok : warn, location.protocol),
+    row('SpeechRecognition microfono', hasSR ? ok : warn, hasSR ? 'Chrome/Edge consigliati' : 'non disponibile'),
+    row('Sintesi vocale', hasSpeech ? ok : err),
+    row('IndexedDB cronologia/glossario', hasIDB ? ok : err),
+    row('Web Share API', hasShare ? ok : warn),
+    row('Save File Picker', hasSavePicker ? ok : warn)
+  ].join('');
+  $('pwaRows').innerHTML = [
+    row('Service Worker supportato', hasSW ? ok : err),
+    row('Manifest collegato', document.querySelector('link[rel="manifest"]') ? ok : warn, 'questa pagina usa controlli statici'),
+    row('Modalità standalone', (matchMedia('(display-mode: standalone)').matches || navigator.standalone) ? ok : warn, 'dipende da installazione'),
+    row('Cache API', 'caches' in window ? ok : err)
+  ].join('');
+}
+function log(msg){ $('log').textContent += '\n' + new Date().toLocaleTimeString() + ' · ' + msg; }
+function resetLog(){ $('log').textContent = 'Pronto.'; }
+async function fetchJsonWithTimeout(url, ms=7000){
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), ms);
+  try {
+    const res = await fetch(url, {signal: ctrl.signal});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    return await res.json();
+  } finally { clearTimeout(timer); }
+}
+$('testMyMemory').onclick = async () => {
+  try {
+    log('MyMemory: avvio test...');
+    const data = await fetchJsonWithTimeout('https://api.mymemory.translated.net/get?q=Hello%20world&langpair=en|it');
+    log('MyMemory: OK → ' + (data?.responseData?.translatedText || '[vuoto]'));
+  } catch(e) { log('MyMemory: ERRORE → ' + e.message); }
+};
+$('testGoogle').onclick = async () => {
+  try {
+    log('Google endpoint non ufficiale: avvio test...');
+    const data = await fetchJsonWithTimeout('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=it&dt=t&q=Hello%20world');
+    const text = Array.isArray(data?.[0]) ? data[0].map(x=>x[0]).join('') : '[formato inatteso]';
+    log('Google endpoint: OK → ' + text);
+  } catch(e) { log('Google endpoint: ERRORE → ' + e.message); }
+};
+$('testLingva').onclick = async () => {
+  try {
+    log('Lingva: avvio test...');
+    const data = await fetchJsonWithTimeout('https://lingva.ml/api/v1/en/it/Hello%20world');
+    log('Lingva: OK → ' + (data?.translation || '[vuoto]'));
+  } catch(e) { log('Lingva: ERRORE → ' + e.message); }
+};
+$('clearLog').onclick = resetLog;
+function loadVoices(){
+  const select = $('voiceSelect');
+  if(!hasSpeech){ select.innerHTML = '<option>Sintesi vocale non disponibile</option>'; return; }
+  const voices = speechSynthesis.getVoices();
+  const italian = voices.filter(v => (v.lang || '').toLowerCase().startsWith('it'));
+  const list = italian.length ? italian : voices;
+  select.innerHTML = list.map(v=>`<option value="${v.name}">${v.name} (${v.lang})</option>`).join('') || '<option>Nessuna voce caricata</option>';
+}
+$('speakTest').onclick = () => {
+  if(!hasSpeech) return;
+  const utterance = new SpeechSynthesisUtterance('Test voce italiana NPC Translator completato.');
+  utterance.lang = 'it-IT';
+  const selected = $('voiceSelect').value;
+  const voice = speechSynthesis.getVoices().find(v => v.name === selected);
+  if(voice) utterance.voice = voice;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+};
+window.addEventListener('online', paintStaticChecks);
+window.addEventListener('offline', paintStaticChecks);
+if(hasSpeech) speechSynthesis.onvoiceschanged = loadVoices;
+paintStaticChecks();
+loadVoices();
+</script>
+</body>
+</html>
