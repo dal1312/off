@@ -1,8 +1,253 @@
-<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0f0f17"><title>YouTube Live Free IT Dubbing</title><style>:root{--p:#a855f7;--s:#7c3aed;--bg:#0a0a0f;--c:#12121a;--c2:#1e1e2a;--t:#e0e0ff;--d:#a0a0cc;--ok:#4ade80;--er:#f87171;--b:#2a2a3a}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font-family:Inter,system-ui,sans-serif;padding:18px}.app{max-width:1200px;margin:auto}.head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}h1{margin:.2rem 0}.controls,.grid{display:grid;gap:12px}.controls{grid-template-columns:repeat(4,1fr);margin:18px 0}.grid{grid-template-columns:1fr 1fr}select,button,textarea{font:inherit;border:1px solid var(--b);border-radius:10px;padding:10px;background:var(--c2);color:var(--t)}button{background:linear-gradient(135deg,var(--s),var(--p));font-weight:700;cursor:pointer}.card,.status,.note{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:14px}textarea{width:100%;min-height:310px;resize:vertical}.status{margin-top:12px;color:var(--d)}.ok{color:var(--ok)}.err{color:var(--er)}.back{color:#d8b4fe;text-decoration:none}.note{color:var(--d);line-height:1.4}.tog{display:flex;gap:8px;align-items:center}input[type=checkbox]{width:20px;height:20px}@media(max-width:800px){.controls,.grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.controls,.grid{grid-template-columns:1fr}}</style></head><body><main class="app"><div class="head"><div><a class="back" href="./index.html">← NPC Translator</a><h1>🎧 YouTube Live → Italiano + Dubbing</h1></div><b id="badge">● Inattivo</b></div><p class="note">Versione gratuita: riconoscimento vocale browser + traduzione free + voce italiana del dispositivo. Per YouTube: avvia il video e usa audio vicino al microfono oppure mix stereo/sistema se configurato dal PC.</p><section class="controls"><select id="source"><option value="en-US">Inglese parlato</option><option value="es-ES">Spagnolo parlato</option><option value="fr-FR">Francese parlato</option><option value="de-DE">Tedesco parlato</option><option value="it-IT">Italiano parlato</option></select><label class="tog"><input id="dub" type="checkbox" checked> Dubbing IT</label><button id="start">▶ Avvia</button><button id="stop" disabled>■ Stop</button></section><section class="grid"><div class="card"><h2>Trascrizione</h2><textarea id="transcript" readonly></textarea></div><div class="card"><h2>Italiano / Dubbing</h2><textarea id="translation" readonly></textarea></div></section><div id="status" class="status">Pronto. Usa Chrome/Edge. Premi Avvia e consenti microfono.</div></main><script>
-const $=x=>document.getElementById(x);let recognition,running=false,voices=[];function status(t,c=''){const e=$('status');e.textContent=t;e.className='status '+c}function loadVoices(){voices=speechSynthesis.getVoices()}loadVoices();speechSynthesis.onvoiceschanged=loadVoices;
-function voiceIt(){return voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith('it'))||voices[0]}function speakIt(text){if(!$('dub').checked||!text.trim())return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='it-IT';u.rate=1.05;u.pitch=1;const v=voiceIt();if(v)u.voice=v;speechSynthesis.speak(u)}
-async function translateIt(text){const src=$('source').value.split('-')[0];if(src==='it')return text;try{const url='https://api.mymemory.translated.net/get?q='+encodeURIComponent(text)+'&langpair='+encodeURIComponent(src+'|it');const r=await fetch(url);if(!r.ok)throw Error('HTTP '+r.status);const d=await r.json();return d?.responseData?.translatedText||text}catch(e){status('Traduzione free non disponibile: '+e.message,'err');return text}}
-async function handleFinal(text){$('transcript').value+=($('transcript').value?'\n':'')+text;const it=await translateIt(text);$('translation').value+=($('translation').value?'\n':'')+it;speakIt(it);status('LIVE · tradotto e doppiato in italiano','ok')}
-function start(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){status('SpeechRecognition non supportato. Usa Chrome/Edge desktop.','err');return}running=true;$('start').disabled=true;$('stop').disabled=false;$('badge').textContent='● LIVE';$('badge').style.color='#4ade80';recognition=new SR();recognition.lang=$('source').value;recognition.continuous=true;recognition.interimResults=true;recognition.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript.trim();if(e.results[i].isFinal)handleFinal(t);else interim=t}if(interim)status('Ascolto: '+interim,'ok')};recognition.onerror=e=>status('Errore voce: '+e.error,'err');recognition.onend=()=>{if(running)try{recognition.start()}catch{}};try{recognition.start();status('Microfono attivo. Dubbing italiano abilitato.','ok')}catch(e){status(e.message,'err')}}
-function stop(){running=false;if(recognition)try{recognition.stop()}catch{}speechSynthesis.cancel();$('start').disabled=false;$('stop').disabled=true;$('badge').textContent='● Inattivo';$('badge').style.color='';status('Fermato')}$('start').onclick=start;$('stop').onclick=stop;$('source').onchange=()=>{if(running)stop()};
-</script></body></html>
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0f0f17">
+  <title>YouTube Live Free IT Dubbing · NPC Translator</title>
+  <style>
+    :root{--p:#a855f7;--s:#7c3aed;--bg:#0a0a0f;--c:#12121a;--c2:#1e1e2a;--t:#e0e0ff;--d:#a0a0cc;--ok:#4ade80;--er:#f87171;--warn:#facc15;--b:#2a2a3a}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#20123d,var(--bg) 42%);color:var(--t);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;padding:18px}.app{max-width:1220px;margin:auto}.head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}h1{margin:.2rem 0}.links{display:flex;gap:12px;flex-wrap:wrap}.back,.links a{color:#d8b4fe;text-decoration:none}.controls,.grid{display:grid;gap:12px}.controls{grid-template-columns:1.2fr 1fr 1fr 1fr;margin:18px 0}.grid{grid-template-columns:1fr 1fr}select,button,textarea{font:inherit;border:1px solid var(--b);border-radius:12px;padding:10px;background:var(--c2);color:var(--t)}button{background:linear-gradient(135deg,var(--s),var(--p));font-weight:800;cursor:pointer}button.secondary{background:var(--c2)}button:disabled{opacity:.55;cursor:not-allowed}.card,.status,.note,.toolbar{background:rgba(18,18,26,.94);border:1px solid var(--b);border-radius:16px;padding:14px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0}.status{margin-top:12px;color:var(--d)}.ok{color:var(--ok)}.err{color:var(--er)}.warn{color:var(--warn)}.note{color:var(--d);line-height:1.45}textarea{width:100%;min-height:320px;resize:vertical;line-height:1.45}.tog{display:flex;gap:8px;align-items:center}input[type=checkbox]{width:20px;height:20px}.badge{font-weight:900}.small{font-size:.86rem;color:var(--d)}@media(max-width:900px){.controls{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}}@media(max-width:540px){.controls{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar>*{width:100%}}
+  </style>
+</head>
+<body>
+<main class="app">
+  <div class="head">
+    <div>
+      <a class="back" href="./index.html">← NPC Translator</a>
+      <h1>🎧 YouTube Live → Italiano + Dubbing</h1>
+      <p class="small">Versione gratuita browser-only: microfono → SpeechRecognition → MyMemory → voce italiana locale.</p>
+    </div>
+    <div class="links">
+      <a href="./diagnostics.html">🧪 Diagnostica</a>
+      <b id="badge" class="badge">● Inattivo</b>
+    </div>
+  </div>
+
+  <p class="note">
+    Per YouTube: avvia il video e fai arrivare l'audio al microfono. Su PC puoi usare mixer/stereo mix/virtual cable. Su iPhone/iPad il riconoscimento vocale browser può essere limitato: Chrome o Edge desktop restano la scelta più stabile.
+  </p>
+
+  <section class="controls">
+    <select id="source" title="Lingua parlata">
+      <option value="en-US">Inglese parlato</option>
+      <option value="es-ES">Spagnolo parlato</option>
+      <option value="fr-FR">Francese parlato</option>
+      <option value="de-DE">Tedesco parlato</option>
+      <option value="pt-PT">Portoghese parlato</option>
+      <option value="it-IT">Italiano parlato</option>
+    </select>
+    <select id="voiceSelect" title="Voce italiana"></select>
+    <label class="tog"><input id="dub" type="checkbox" checked> Dubbing IT</label>
+    <label class="tog"><input id="autoRestart" type="checkbox" checked> Auto-restart</label>
+  </section>
+
+  <section class="toolbar">
+    <button id="start">▶ Avvia</button>
+    <button id="stop" disabled>■ Stop</button>
+    <button id="testProvider" class="secondary">Test traduzione</button>
+    <button id="copyIt" class="secondary">Copia italiano</button>
+    <button id="downloadTxt" class="secondary">Scarica TXT</button>
+    <button id="clear" class="secondary">Pulisci</button>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Trascrizione</h2>
+      <textarea id="transcript" readonly placeholder="Qui compare il testo riconosciuto..."></textarea>
+    </div>
+    <div class="card">
+      <h2>Italiano / Dubbing</h2>
+      <textarea id="translation" readonly placeholder="Qui compare la traduzione italiana..."></textarea>
+    </div>
+  </section>
+
+  <div id="status" class="status">Pronto. Premi Avvia e consenti il microfono.</div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let running = false;
+let voices = [];
+let lastFinal = '';
+let queue = Promise.resolve();
+function status(text, cls=''){
+  const el = $('status');
+  el.textContent = text;
+  el.className = 'status ' + cls;
+}
+function setBadge(live){
+  $('badge').textContent = live ? '● LIVE' : '● Inattivo';
+  $('badge').style.color = live ? '#4ade80' : '';
+}
+function loadPrefs(){
+  $('source').value = localStorage.getItem('npc_live_source') || 'en-US';
+  $('dub').checked = localStorage.getItem('npc_live_dub') !== 'false';
+  $('autoRestart').checked = localStorage.getItem('npc_live_autorestart') !== 'false';
+}
+function savePrefs(){
+  localStorage.setItem('npc_live_source', $('source').value);
+  localStorage.setItem('npc_live_dub', String($('dub').checked));
+  localStorage.setItem('npc_live_autorestart', String($('autoRestart').checked));
+}
+function loadVoices(){
+  if(!('speechSynthesis' in window)){
+    $('voiceSelect').innerHTML = '<option>Voce non disponibile</option>';
+    return;
+  }
+  voices = speechSynthesis.getVoices();
+  const italian = voices.filter(v => (v.lang || '').toLowerCase().startsWith('it'));
+  const list = italian.length ? italian : voices;
+  $('voiceSelect').innerHTML = list.map(v => `<option value="${v.name}">${v.name} (${v.lang})</option>`).join('') || '<option>Nessuna voce caricata</option>';
+}
+function selectedVoice(){
+  const name = $('voiceSelect').value;
+  return voices.find(v => v.name === name) || voices.find(v => (v.lang || '').toLowerCase().startsWith('it')) || voices[0];
+}
+function speakIt(text){
+  if(!$('dub').checked || !text.trim() || !('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'it-IT';
+  u.rate = 1.04;
+  u.pitch = 1;
+  const v = selectedVoice();
+  if(v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+async function fetchWithTimeout(url, ms=8000){
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  try {
+    const res = await fetch(url, {signal: ctrl.signal});
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.json();
+  } finally { clearTimeout(timer); }
+}
+async function translateIt(text){
+  const src = $('source').value.split('-')[0];
+  if(src === 'it') return text;
+  const normalized = text.trim();
+  if(!normalized) return '';
+  const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(normalized) + '&langpair=' + encodeURIComponent(src + '|it');
+  const data = await fetchWithTimeout(url);
+  return data?.responseData?.translatedText || normalized;
+}
+function append(id, text){
+  const el = $(id);
+  el.value += (el.value ? '\n' : '') + text;
+  el.scrollTop = el.scrollHeight;
+}
+async function handleFinal(text){
+  const clean = text.trim();
+  if(!clean || clean === lastFinal) return;
+  lastFinal = clean;
+  append('transcript', clean);
+  queue = queue.then(async () => {
+    try {
+      const it = await translateIt(clean);
+      append('translation', it);
+      speakIt(it);
+      status('LIVE · tradotto e doppiato in italiano', 'ok');
+    } catch(e) {
+      status('Traduzione non disponibile: ' + e.message, 'err');
+      append('translation', '[traduzione non disponibile] ' + clean);
+    }
+  });
+}
+function createRecognition(){
+  const rec = new SpeechRecognitionAPI();
+  rec.lang = $('source').value;
+  rec.continuous = true;
+  rec.interimResults = true;
+  rec.onresult = event => {
+    let interim = '';
+    for(let i = event.resultIndex; i < event.results.length; i++){
+      const text = event.results[i][0].transcript.trim();
+      if(event.results[i].isFinal) handleFinal(text);
+      else interim = text;
+    }
+    if(interim) status('Ascolto: ' + interim, 'ok');
+  };
+  rec.onerror = event => {
+    const msg = event.error || 'errore sconosciuto';
+    status('Errore voce: ' + msg, msg === 'no-speech' ? 'warn' : 'err');
+  };
+  rec.onend = () => {
+    if(running && $('autoRestart').checked){
+      setTimeout(() => {
+        try { recognition.start(); }
+        catch(e) { status('Riavvio riconoscimento: ' + e.message, 'warn'); }
+      }, 450);
+    }
+  };
+  return rec;
+}
+function start(){
+  if(!SpeechRecognitionAPI){
+    status('SpeechRecognition non supportato. Usa Chrome/Edge desktop.', 'err');
+    return;
+  }
+  savePrefs();
+  running = true;
+  $('start').disabled = true;
+  $('stop').disabled = false;
+  setBadge(true);
+  recognition = createRecognition();
+  try {
+    recognition.start();
+    status('Microfono attivo. Ascolto in corso.', 'ok');
+  } catch(e) {
+    status('Avvio fallito: ' + e.message, 'err');
+    stop();
+  }
+}
+function stop(){
+  running = false;
+  if(recognition){ try { recognition.stop(); } catch(e){} }
+  if('speechSynthesis' in window) speechSynthesis.cancel();
+  $('start').disabled = false;
+  $('stop').disabled = true;
+  setBadge(false);
+  status('Fermato.');
+}
+function downloadTxt(){
+  const content = 'NPC Translator Live\nData: ' + new Date().toLocaleString() + '\n\nTRASCRIZIONE\n' + $('transcript').value + '\n\nITALIANO\n' + $('translation').value + '\n';
+  const blob = new Blob([content], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'npc-live-it-' + new Date().toISOString().slice(0,10) + '.txt';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+$('start').onclick = start;
+$('stop').onclick = stop;
+$('source').onchange = () => { savePrefs(); if(running) stop(); };
+$('dub').onchange = savePrefs;
+$('autoRestart').onchange = savePrefs;
+$('testProvider').onclick = async () => {
+  try {
+    status('Test provider MyMemory...', 'warn');
+    const result = await translateIt('Hello world');
+    status('Provider OK: ' + result, 'ok');
+  } catch(e) { status('Provider KO: ' + e.message, 'err'); }
+};
+$('copyIt').onclick = async () => {
+  try { await navigator.clipboard.writeText($('translation').value); status('Traduzione copiata.', 'ok'); }
+  catch(e) { status('Copia non riuscita: ' + e.message, 'err'); }
+};
+$('downloadTxt').onclick = downloadTxt;
+$('clear').onclick = () => {
+  $('transcript').value = '';
+  $('translation').value = '';
+  lastFinal = '';
+  status('Pulito.');
+};
+loadPrefs();
+loadVoices();
+if('speechSynthesis' in window) speechSynthesis.onvoiceschanged = loadVoices;
+if(!SpeechRecognitionAPI){ status('SpeechRecognition non supportato su questo browser. Apri con Chrome/Edge desktop.', 'err'); }
+</script>
+</body>
+</html>
