@@ -2,9 +2,9 @@
 
 **Traduttore avanzato per testi, libri, RPG, documenti e workflow live.**
 
-NPC Translator è una PWA leggera basata su HTML/CSS/JavaScript vanilla. Nasce per tradurre testi lunghi, libri, file e dialoghi, ma include anche moduli sperimentali per YouTube/Live in italiano.
+NPC Translator è una PWA leggera basata su HTML/CSS/JavaScript vanilla. Nasce per tradurre testi lunghi, libri, file e dialoghi, ma include anche moduli sperimentali per YouTube/Live in italiano e backend locali opzionali.
 
-![Versione](https://img.shields.io/badge/version-0.8.0--youtube--dom-purple)
+![Versione](https://img.shields.io/badge/version-0.9.0--pdf--ollama-purple)
 ![PWA](https://img.shields.io/badge/PWA-support-blue)
 ![Offline UI](https://img.shields.io/badge/Offline-UI-green)
 ![Static](https://img.shields.io/badge/GitHub%20Pages-ready-black)
@@ -17,8 +17,9 @@ NPC Translator è una PWA leggera basata su HTML/CSS/JavaScript vanilla. Nasce p
 | YouTube Live gratuito | `youtube-live.html` | Sperimentale | Microfono → riconoscimento vocale browser → traduzione free → voce italiana. |
 | YouTube sottotitoli da schermo | `youtube-subtitles-ocr.html` | Sperimentale | Screen Capture → OCR sottotitoli video → traduzione italiana. |
 | Estensione YouTube DOM | `extension/` | Sperimentale | Content script dentro YouTube → lettura DOM sottotitoli → overlay italiano. |
+| Backend PDF Ollama | `backend-pdf/` | Locale | PDFMathTranslate/pdf2zh → Ollama locale → PDF tradotto mono/dual. |
 | Diagnostica | `diagnostics.html` | Attivo | Verifica browser, PWA, provider gratuiti e voce italiana. |
-| Backend opzionale | `backend/` | Separato | Server Node.js/Fastify per futura trascrizione/traduzione AI lato server. |
+| Backend opzionale live | `backend/` | Separato | Server Node.js/Fastify per futura trascrizione/traduzione AI lato server. |
 
 ## Funzionalità principali
 
@@ -32,6 +33,7 @@ NPC Translator è una PWA leggera basata su HTML/CSS/JavaScript vanilla. Nasce p
 - Traduzione live opzionale.
 - Lettura sottotitoli video da schermo con OCR.
 - Lettura diretta sottotitoli YouTube via estensione browser.
+- Traduzione PDF avanzata locale con Ollama e PDFMathTranslate.
 - PWA installabile con Service Worker.
 - Tema chiaro/scuro, modalità immersiva e supporto RTL.
 
@@ -70,6 +72,7 @@ youtube-live.html           → YouTube/Live gratuito via microfono
 youtube-subtitles-ocr.html  → Lettura sottotitoli da schermo con OCR
 diagnostics.html            → test ambiente e provider
 extension/                  → estensione browser per lettura diretta YouTube DOM
+backend-pdf/                → backend locale PDFMathTranslate + Ollama
 ```
 
 ## Traduzione gratuita
@@ -139,6 +142,43 @@ Poi apri YouTube, attiva i sottotitoli e usa il popup dell'estensione.
 
 Consulta `extension/README.md` per dettagli.
 
+## PDF avanzati con Ollama locale
+
+La cartella `backend-pdf/` aggiunge un backend locale per PDF complessi usando PDFMathTranslate/pdf2zh con servizio `ollama`.
+
+Pipeline:
+
+```text
+PDF caricato
+→ backend-pdf FastAPI locale
+→ pdf2zh -s ollama
+→ Ollama locale
+→ output PDF mono / dual
+```
+
+Avvio rapido Windows:
+
+```powershell
+cd backend-pdf
+.\start-windows.ps1
+```
+
+Avvio rapido macOS/Linux:
+
+```bash
+cd backend-pdf
+chmod +x start-linux-mac.sh
+./start-linux-mac.sh
+```
+
+Backend locale:
+
+```text
+http://127.0.0.1:8090
+```
+
+Consulta `backend-pdf/README.md` per setup Ollama, modelli consigliati ed endpoint.
+
 ## Diagnostica
 
 Apri `diagnostics.html` per verificare:
@@ -152,7 +192,7 @@ Apri `diagnostics.html` per verificare:
 
 Consulta `docs/DIAGNOSTICS.md` per l'interpretazione dei risultati.
 
-## Backend opzionale
+## Backend opzionale live
 
 La cartella `backend/` contiene un server Node.js/Fastify per una modalità live avanzata con OpenAI.
 
@@ -171,7 +211,7 @@ Health check:
 http://localhost:8787/health
 ```
 
-Il backend è opzionale e non serve per usare la PWA statica su GitHub Pages.
+Il backend live è opzionale e non serve per usare la PWA statica su GitHub Pages.
 
 ## Tecnologie
 
@@ -185,20 +225,23 @@ Il backend è opzionale e non serve per usare la PWA statica su GitHub Pages.
 - Web Speech API per voce e dettatura.
 - Screen Capture API per lettura sottotitoli da schermo.
 - Chrome Extension Manifest V3 per lettura DOM YouTube.
-- Fastify/OpenAI solo nel backend opzionale.
+- FastAPI + PDFMathTranslate/pdf2zh + Ollama per PDF avanzati locali.
+- Fastify/OpenAI solo nel backend live opzionale.
 
 ## Note tecniche
 
 - L'interfaccia PWA può funzionare offline dopo il primo caricamento.
-- La traduzione richiede internet perché i provider sono online.
+- La traduzione base richiede internet perché i provider frontend sono online.
 - Le API gratuite non vanno trattate come servizio garantito.
 - La chiave OpenAI, se usata, deve restare solo nel backend e mai nei file statici.
 - La lettura sottotitoli da schermo richiede consenso esplicito alla cattura schermo.
 - La lettura diretta di YouTube richiede estensione browser perché una pagina GitHub Pages non può leggere il DOM di youtube.com.
+- La traduzione PDF con Ollama gira in locale ma richiede Ollama avviato e un modello scaricato.
+- `backend-pdf/` usa pdf2zh/PDFMathTranslate, licenza AGPL-3.0: tienilo separato e documentato.
 
 ## Licenza
 
-Questo progetto è rilasciato sotto licenza MIT.
+Questo progetto è rilasciato sotto licenza MIT. I moduli di terze parti mantengono le rispettive licenze.
 
 ---
 
