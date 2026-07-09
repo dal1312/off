@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "NPC YouTube Caption Translator",
-  "version": "0.2.0",
-  "description": "Legge direttamente i sottotitoli dal player YouTube, li traduce e li pronuncia in italiano.",
+  "version": "0.3.0",
+  "description": "Legge i sottotitoli YouTube, li traduce e pronuncia l'italiano con coda audio stabile.",
   "permissions": [
     "storage",
     "activeTab"

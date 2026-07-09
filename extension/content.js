@@ -11,6 +11,7 @@
     ttsEnabled: true,
     ttsRate: 1.0,
     ttsVolume: 1.0,
+    ttsDelayMs: 850,
     minChars: 2,
     pollMs: 450
   };
@@ -23,6 +24,10 @@
   let pollTimer = null;
   let cache = new Map();
   let voicesReady = false;
+  let speechDebounceTimer = null;
+  let firstSpeechRequestAt = 0;
+  let pendingSpeech = '';
+  let queuedAfterCurrent = '';
 
   const CAPTION_SELECTORS = [
     '.ytp-caption-segment',
@@ -37,6 +42,15 @@
       .replace(/\s+/g, ' ')
       .replace(/[\u200B-\u200D\uFEFF]/g, '')
       .trim();
+  }
+
+  function normalizeForSpeech(text) {
+    const clean = normalize(text)
+      .replace(/https?:\/\/\S+/g, '')
+      .replace(/[\[\](){}<>]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    return clean.length > 260 ? clean.slice(0, 260) + '…' : clean;
   }
 
   function uniqJoin(parts) {
@@ -166,8 +180,28 @@
     };
   }
 
-  function speak(text, force = false) {
-    const clean = normalize(text);
+  function buildUtterance(clean) {
+    const utterance = new SpeechSynthesisUtterance(clean);
+    utterance.lang = settings.targetLang === 'it' ? 'it-IT' : settings.targetLang;
+    utterance.rate = Math.max(0.7, Math.min(Number(settings.ttsRate) || 1, 1.35));
+    utterance.volume = Math.max(0, Math.min(Number(settings.ttsVolume) || 1, 1));
+    utterance.pitch = 1;
+    const voice = getItalianVoice();
+    if (voice && settings.targetLang === 'it') utterance.voice = voice;
+    utterance.onstart = () => paintOverlay(lastCaption, lastTranslation, 'audio in riproduzione');
+    utterance.onerror = () => paintOverlay(lastCaption, lastTranslation, 'errore audio TTS');
+    utterance.onend = () => {
+      const next = normalizeForSpeech(queuedAfterCurrent);
+      queuedAfterCurrent = '';
+      if (next && next !== lastSpoken && settings.ttsEnabled) {
+        setTimeout(() => speakNow(next, false), 140);
+      }
+    };
+    return utterance;
+  }
+
+  function speakNow(text, force = false) {
+    const clean = normalizeForSpeech(text);
     if (!settings.ttsEnabled && !force) return;
     if (!clean || clean.length < 2) return;
     if (!force && clean === lastSpoken) return;
@@ -177,23 +211,57 @@
     }
 
     try {
+      if (!force && speechSynthesis.speaking) {
+        queuedAfterCurrent = clean;
+        paintOverlay(lastCaption, lastTranslation, 'audio in coda');
+        return;
+      }
+
+      if (force) speechSynthesis.cancel();
       lastSpoken = clean;
-      speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(clean);
-      utterance.lang = settings.targetLang === 'it' ? 'it-IT' : settings.targetLang;
-      utterance.rate = Math.max(0.7, Math.min(Number(settings.ttsRate) || 1, 1.35));
-      utterance.volume = Math.max(0, Math.min(Number(settings.ttsVolume) || 1, 1));
-      utterance.pitch = 1;
-      const voice = getItalianVoice();
-      if (voice && settings.targetLang === 'it') utterance.voice = voice;
-      utterance.onerror = () => paintOverlay(lastCaption, lastTranslation, 'errore audio TTS');
+      const utterance = buildUtterance(clean);
       speechSynthesis.speak(utterance);
     } catch (err) {
       paintOverlay(lastCaption, lastTranslation, 'audio bloccato: apri popup e premi Test audio');
     }
   }
 
+  function requestSpeak(text, force = false) {
+    const clean = normalizeForSpeech(text);
+    if (!settings.ttsEnabled && !force) return;
+    if (!clean || clean.length < 2) return;
+
+    if (force) {
+      if (speechDebounceTimer) clearTimeout(speechDebounceTimer);
+      speechDebounceTimer = null;
+      firstSpeechRequestAt = 0;
+      pendingSpeech = '';
+      speakNow(clean, true);
+      return;
+    }
+
+    pendingSpeech = clean;
+    if (!firstSpeechRequestAt) firstSpeechRequestAt = Date.now();
+    if (speechDebounceTimer) clearTimeout(speechDebounceTimer);
+
+    const maxWaitReached = Date.now() - firstSpeechRequestAt > 1900;
+    const delay = maxWaitReached ? 80 : Math.max(300, Math.min(Number(settings.ttsDelayMs) || 850, 1400));
+
+    speechDebounceTimer = setTimeout(() => {
+      const finalText = pendingSpeech;
+      pendingSpeech = '';
+      firstSpeechRequestAt = 0;
+      speechDebounceTimer = null;
+      speakNow(finalText, false);
+    }, delay);
+  }
+
   function stopSpeech() {
+    if (speechDebounceTimer) clearTimeout(speechDebounceTimer);
+    speechDebounceTimer = null;
+    firstSpeechRequestAt = 0;
+    pendingSpeech = '';
+    queuedAfterCurrent = '';
     if ('speechSynthesis' in window) speechSynthesis.cancel();
   }
 
@@ -266,7 +334,7 @@
       const translated = await translate(clean);
       lastTranslation = translated;
       paintOverlay(clean, translated, 'letto direttamente dal DOM YouTube');
-      speak(translated);
+      requestSpeak(translated);
     } catch (err) {
       paintOverlay(clean, lastTranslation || clean, 'provider non disponibile: ' + err.message);
     } finally {
@@ -319,7 +387,7 @@
     if (!message || message.type !== 'NPC_YT_TEST_AUDIO') return;
     settings = { ...settings, ...(message.settings || {}), ttsEnabled: true };
     warmVoices();
-    speak('Audio traduzione italiano attivo.', true);
+    requestSpeak('Audio traduzione italiano attivo.', true);
     paintOverlay(lastCaption, lastTranslation || 'Audio traduzione italiano attivo.', 'test audio inviato');
     sendResponse({ ok: true, voicesReady, speech: 'speechSynthesis' in window });
   });
