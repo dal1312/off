@@ -60,6 +60,28 @@ Il browser può bloccare la sintesi vocale finché non c'è un'interazione utent
 5. Dovresti sentire: `Audio traduzione italiano attivo.`
 6. Lascia i sottotitoli YouTube attivi e avvia il video.
 
+## Audio durante il video
+
+La versione `0.3.0` usa una coda audio stabilizzata:
+
+```text
+sottotitolo cambia rapidamente
+→ attesa breve frase stabile
+→ traduzione
+→ audio in riproduzione
+→ eventuale frase successiva in coda
+```
+
+Questo evita il problema in cui il video aggiornava i sottotitoli troppo velocemente e il browser cancellava la voce prima che partisse.
+
+Se vedi la traduzione a schermo ma non senti il video parlare:
+
+- controlla che nel popup sia attivo **Dubbing audio IT**;
+- premi **Test audio** una volta dopo il caricamento del video;
+- lascia **Velocità voce = Normale** e **Volume voce = 100%**;
+- verifica che l'overlay dica `audio IT attivo`;
+- se l'overlay resta su `attendo sottotitoli`, il video non sta esponendo sottotitoli DOM leggibili.
+
 Se non senti audio:
 
 - ricarica la scheda YouTube;
@@ -107,6 +129,7 @@ manifest.json
 → lettura DOM sottotitoli
 → traduzione provider gratuito
 → overlay italiano
+→ coda audio stabilizzata
 → speechSynthesis per Dubbing IT
 → popup.html/popup.js per impostazioni
 ```
