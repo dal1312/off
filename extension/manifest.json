@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "NPC YouTube Caption Translator",
+  "version": "0.1.0",
+  "description": "Legge direttamente i sottotitoli dal player YouTube e li traduce in overlay italiano.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.youtube.com/*",
+    "https://m.youtube.com/*",
+    "https://api.mymemory.translated.net/*",
+    "https://translate.googleapis.com/*",
+    "https://lingva.ml/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://m.youtube.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "NPC YouTube Translator",
+    "default_popup": "popup.html"
+  }
+}
