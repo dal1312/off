@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>NPC YouTube Translator</title>
+  <style>
+    :root{--p:#a855f7;--s:#7c3aed;--bg:#0a0a0f;--c:#12121a;--c2:#1e1e2a;--t:#e0e0ff;--d:#a0a0cc;--ok:#4ade80;--b:#2a2a3a}
+    *{box-sizing:border-box}body{width:330px;margin:0;padding:14px;background:var(--bg);color:var(--t);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}.head{margin-bottom:12px}h1{font-size:18px;margin:0 0 4px}.muted{color:var(--d);font-size:12px;line-height:1.35}.row{display:grid;gap:6px;margin:10px 0}label{font-size:12px;color:var(--d);font-weight:700}select,input{width:100%;border:1px solid var(--b);border-radius:9px;padding:8px;background:var(--c2);color:var(--t)}.toggle{display:flex;align-items:center;gap:8px;background:var(--c);border:1px solid var(--b);border-radius:10px;padding:10px;margin:10px 0}.toggle input{width:18px;height:18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}button{width:100%;border:0;border-radius:10px;padding:10px;background:linear-gradient(135deg,var(--s),var(--p));color:white;font-weight:900;cursor:pointer}.status{font-size:12px;color:var(--ok);min-height:16px;margin-top:8px}.small{font-size:11px;color:var(--d);line-height:1.35;margin-top:10px}
+  </style>
+</head>
+<body>
+  <div class="head">
+    <h1>NPC YouTube Translator</h1>
+    <div class="muted">Legge i sottotitoli dal DOM YouTube e mostra overlay italiano.</div>
+  </div>
+
+  <label class="toggle">
+    <input id="enabled" type="checkbox">
+    <span>Attivo su YouTube</span>
+  </label>
+
+  <div class="grid">
+    <div class="row">
+      <label for="sourceLang">Lingua sottotitoli</label>
+      <select id="sourceLang">
+        <option value="auto">Auto</option>
+        <option value="en">Inglese</option>
+        <option value="es">Spagnolo</option>
+        <option value="fr">Francese</option>
+        <option value="de">Tedesco</option>
+        <option value="pt">Portoghese</option>
+        <option value="it">Italiano</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="targetLang">Traduci in</label>
+      <select id="targetLang">
+        <option value="it">Italiano</option>
+        <option value="en">Inglese</option>
+        <option value="es">Spagnolo</option>
+        <option value="fr">Francese</option>
+        <option value="de">Tedesco</option>
+        <option value="pt">Portoghese</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <label for="provider">Provider traduzione</label>
+    <select id="provider">
+      <option value="mymemory">MyMemory</option>
+      <option value="google">Google endpoint non ufficiale</option>
+      <option value="lingva">Lingva</option>
+    </select>
+  </div>
+
+  <div class="grid">
+    <div class="row">
+      <label for="overlayPosition">Overlay</label>
+      <select id="overlayPosition">
+        <option value="bottom">Basso</option>
+        <option value="top">Alto</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="pollMs">Lettura</label>
+      <select id="pollMs">
+        <option value="300">Veloce</option>
+        <option value="450">Normale</option>
+        <option value="700">Leggera</option>
+      </select>
+    </div>
+  </div>
+
+  <label class="toggle">
+    <input id="showOriginal" type="checkbox">
+    <span>Mostra anche originale</span>
+  </label>
+
+  <button id="save">Salva e applica</button>
+  <div id="status" class="status"></div>
+  <div class="small">Apri un video YouTube con sottotitoli attivi. L’estensione legge gli elementi caption della pagina YouTube, non usa OCR.</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
