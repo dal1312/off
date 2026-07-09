@@ -6,13 +6,13 @@
   <title>NPC YouTube Translator</title>
   <style>
     :root{--p:#a855f7;--s:#7c3aed;--bg:#0a0a0f;--c:#12121a;--c2:#1e1e2a;--t:#e0e0ff;--d:#a0a0cc;--ok:#4ade80;--b:#2a2a3a}
-    *{box-sizing:border-box}body{width:330px;margin:0;padding:14px;background:var(--bg);color:var(--t);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}.head{margin-bottom:12px}h1{font-size:18px;margin:0 0 4px}.muted{color:var(--d);font-size:12px;line-height:1.35}.row{display:grid;gap:6px;margin:10px 0}label{font-size:12px;color:var(--d);font-weight:700}select,input{width:100%;border:1px solid var(--b);border-radius:9px;padding:8px;background:var(--c2);color:var(--t)}.toggle{display:flex;align-items:center;gap:8px;background:var(--c);border:1px solid var(--b);border-radius:10px;padding:10px;margin:10px 0}.toggle input{width:18px;height:18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}button{width:100%;border:0;border-radius:10px;padding:10px;background:linear-gradient(135deg,var(--s),var(--p));color:white;font-weight:900;cursor:pointer}.status{font-size:12px;color:var(--ok);min-height:16px;margin-top:8px}.small{font-size:11px;color:var(--d);line-height:1.35;margin-top:10px}
+    *{box-sizing:border-box}body{width:350px;margin:0;padding:14px;background:var(--bg);color:var(--t);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}.head{margin-bottom:12px}h1{font-size:18px;margin:0 0 4px}.muted{color:var(--d);font-size:12px;line-height:1.35}.row{display:grid;gap:6px;margin:10px 0}label{font-size:12px;color:var(--d);font-weight:700}select,input{width:100%;border:1px solid var(--b);border-radius:9px;padding:8px;background:var(--c2);color:var(--t)}.toggle{display:flex;align-items:center;gap:8px;background:var(--c);border:1px solid var(--b);border-radius:10px;padding:10px;margin:10px 0}.toggle input{width:18px;height:18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}button{width:100%;border:0;border-radius:10px;padding:10px;background:linear-gradient(135deg,var(--s),var(--p));color:white;font-weight:900;cursor:pointer}.secondary{background:var(--c2);border:1px solid var(--b);margin-top:8px}.status{font-size:12px;color:var(--ok);min-height:16px;margin-top:8px}.small{font-size:11px;color:var(--d);line-height:1.35;margin-top:10px}.section{border-top:1px solid var(--b);margin-top:12px;padding-top:10px}
   </style>
 </head>
 <body>
   <div class="head">
     <h1>NPC YouTube Translator</h1>
-    <div class="muted">Legge i sottotitoli dal DOM YouTube e mostra overlay italiano.</div>
+    <div class="muted">Legge i sottotitoli dal DOM YouTube, mostra overlay e pronuncia l'italiano.</div>
   </div>
 
   <label class="toggle">
@@ -78,9 +78,38 @@
     <span>Mostra anche originale</span>
   </label>
 
+  <div class="section">
+    <label class="toggle">
+      <input id="ttsEnabled" type="checkbox">
+      <span>Dubbing audio IT</span>
+    </label>
+
+    <div class="grid">
+      <div class="row">
+        <label for="ttsRate">Velocità voce</label>
+        <select id="ttsRate">
+          <option value="0.85">Lenta</option>
+          <option value="1">Normale</option>
+          <option value="1.15">Rapida</option>
+          <option value="1.3">Molto rapida</option>
+        </select>
+      </div>
+      <div class="row">
+        <label for="ttsVolume">Volume voce</label>
+        <select id="ttsVolume">
+          <option value="0.45">45%</option>
+          <option value="0.7">70%</option>
+          <option value="1">100%</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="testAudio" class="secondary">Test audio</button>
+  </div>
+
   <button id="save">Salva e applica</button>
   <div id="status" class="status"></div>
-  <div class="small">Apri un video YouTube con sottotitoli attivi. L’estensione legge gli elementi caption della pagina YouTube, non usa OCR.</div>
+  <div class="small">Apri un video YouTube con sottotitoli attivi. Per sbloccare l'audio, premi prima <b>Test audio</b> dal popup e consenti l'audio nel browser.</div>
 
   <script src="popup.js"></script>
 </body>
