@@ -1,6 +1,6 @@
 # NPC YouTube Caption Translator Extension
 
-Questa estensione legge direttamente i sottotitoli dal DOM del player YouTube e mostra una traduzione italiana sopra il video.
+Questa estensione legge direttamente i sottotitoli dal DOM del player YouTube, mostra una traduzione italiana sopra il video e può pronunciarla con la voce italiana del browser.
 
 ## Differenza rispetto alla pagina OCR
 
@@ -38,6 +38,7 @@ extension/
 7. Apri YouTube.
 8. Avvia un video con sottotitoli attivi.
 9. Clicca l'icona dell'estensione e verifica che sia attiva.
+10. Attiva **Dubbing audio IT** e premi **Test audio**.
 
 ## Uso
 
@@ -46,6 +47,27 @@ extension/
 3. L'estensione cerca elementi come `.ytp-caption-segment` e `caption-visual-line`.
 4. Quando trova testo nuovo, lo traduce.
 5. La traduzione appare in overlay sopra il video.
+6. Se **Dubbing audio IT** è attivo, la traduzione viene pronunciata con `speechSynthesis`.
+
+## Audio / Dubbing IT
+
+Il browser può bloccare la sintesi vocale finché non c'è un'interazione utente. Per sbloccarla:
+
+1. Apri un video YouTube.
+2. Apri il popup dell'estensione.
+3. Attiva **Dubbing audio IT**.
+4. Premi **Test audio**.
+5. Dovresti sentire: `Audio traduzione italiano attivo.`
+6. Lascia i sottotitoli YouTube attivi e avvia il video.
+
+Se non senti audio:
+
+- ricarica la scheda YouTube;
+- premi di nuovo **Test audio**;
+- controlla volume di sistema e mixer audio;
+- verifica che Chrome/Edge non abbia il sito disattivato;
+- installa/abilita una voce italiana nel sistema operativo;
+- prova velocità voce `Normale` e volume `100%`.
 
 ## Impostazioni popup
 
@@ -55,7 +77,11 @@ extension/
 - provider traduzione;
 - posizione overlay;
 - mostra originale;
-- frequenza lettura.
+- frequenza lettura;
+- Dubbing audio IT;
+- velocità voce;
+- volume voce;
+- Test audio.
 
 ## Provider disponibili
 
@@ -71,6 +97,7 @@ I provider gratuiti possono avere limiti o blocchi temporanei.
 - Se YouTube cambia classi CSS o struttura HTML, il content script potrebbe richiedere aggiornamento.
 - Alcuni sottotitoli automatici possono comparire a segmenti molto brevi.
 - Non sostituisce i sottotitoli originali: aggiunge un overlay italiano.
+- L'audio usa la sintesi vocale del browser/sistema operativo, quindi qualità e disponibilità dipendono dal dispositivo.
 
 ## Architettura
 
@@ -80,6 +107,7 @@ manifest.json
 → lettura DOM sottotitoli
 → traduzione provider gratuito
 → overlay italiano
+→ speechSynthesis per Dubbing IT
 → popup.html/popup.js per impostazioni
 ```
 
