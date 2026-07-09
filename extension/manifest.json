@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
   "name": "NPC YouTube Caption Translator",
-  "version": "0.1.0",
-  "description": "Legge direttamente i sottotitoli dal player YouTube e li traduce in overlay italiano.",
+  "version": "0.2.0",
+  "description": "Legge direttamente i sottotitoli dal player YouTube, li traduce e li pronuncia in italiano.",
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab"
   ],
   "host_permissions": [
     "https://www.youtube.com/*",
