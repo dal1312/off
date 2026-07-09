@@ -8,6 +8,9 @@
     provider: 'mymemory',
     overlayPosition: 'bottom',
     showOriginal: false,
+    ttsEnabled: true,
+    ttsRate: 1.0,
+    ttsVolume: 1.0,
     minChars: 2,
     pollMs: 450
   };
@@ -15,9 +18,11 @@
   let settings = { ...DEFAULTS };
   let lastCaption = '';
   let lastTranslation = '';
+  let lastSpoken = '';
   let translating = false;
   let pollTimer = null;
   let cache = new Map();
+  let voicesReady = false;
 
   const CAPTION_SELECTORS = [
     '.ytp-caption-segment',
@@ -134,7 +139,62 @@
 
     if (originalEl) originalEl.textContent = original || '';
     if (italianEl) italianEl.textContent = translation || 'In attesa dei sottotitoli...';
-    if (statusEl) statusEl.textContent = status || 'NPC YouTube Caption Translator';
+    if (statusEl) {
+      const audio = settings.ttsEnabled ? 'audio IT attivo' : 'audio IT spento';
+      statusEl.textContent = status ? `${status} · ${audio}` : `NPC YouTube Caption Translator · ${audio}`;
+    }
+  }
+
+  function getItalianVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    const voices = speechSynthesis.getVoices() || [];
+    return (
+      voices.find(v => /it[-_]?IT/i.test(v.lang || '')) ||
+      voices.find(v => /^it/i.test(v.lang || '')) ||
+      voices.find(v => /ital/i.test((v.name || '') + ' ' + (v.lang || ''))) ||
+      voices[0] ||
+      null
+    );
+  }
+
+  function warmVoices() {
+    if (!('speechSynthesis' in window)) return;
+    const voices = speechSynthesis.getVoices();
+    voicesReady = voices && voices.length > 0;
+    window.speechSynthesis.onvoiceschanged = () => {
+      voicesReady = true;
+    };
+  }
+
+  function speak(text, force = false) {
+    const clean = normalize(text);
+    if (!settings.ttsEnabled && !force) return;
+    if (!clean || clean.length < 2) return;
+    if (!force && clean === lastSpoken) return;
+    if (!('speechSynthesis' in window)) {
+      paintOverlay(lastCaption, lastTranslation, 'audio non supportato dal browser');
+      return;
+    }
+
+    try {
+      lastSpoken = clean;
+      speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(clean);
+      utterance.lang = settings.targetLang === 'it' ? 'it-IT' : settings.targetLang;
+      utterance.rate = Math.max(0.7, Math.min(Number(settings.ttsRate) || 1, 1.35));
+      utterance.volume = Math.max(0, Math.min(Number(settings.ttsVolume) || 1, 1));
+      utterance.pitch = 1;
+      const voice = getItalianVoice();
+      if (voice && settings.targetLang === 'it') utterance.voice = voice;
+      utterance.onerror = () => paintOverlay(lastCaption, lastTranslation, 'errore audio TTS');
+      speechSynthesis.speak(utterance);
+    } catch (err) {
+      paintOverlay(lastCaption, lastTranslation, 'audio bloccato: apri popup e premi Test audio');
+    }
+  }
+
+  function stopSpeech() {
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
   }
 
   async function translate(text) {
@@ -206,6 +266,7 @@
       const translated = await translate(clean);
       lastTranslation = translated;
       paintOverlay(clean, translated, 'letto direttamente dal DOM YouTube');
+      speak(translated);
     } catch (err) {
       paintOverlay(clean, lastTranslation || clean, 'provider non disponibile: ' + err.message);
     } finally {
@@ -222,6 +283,7 @@
   function start() {
     stop();
     ensureOverlay();
+    warmVoices();
     pollTimer = setInterval(tick, Number(settings.pollMs) || DEFAULTS.pollMs);
     tick();
   }
@@ -243,12 +305,23 @@
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (!message || message.type !== 'NPC_YT_SETTINGS') return;
     settings = { ...settings, ...message.settings };
+    warmVoices();
     if (settings.enabled) start();
     else {
       stop();
+      stopSpeech();
       paintOverlay('', '', 'disattivato');
     }
-    sendResponse({ ok: true, settings });
+    sendResponse({ ok: true, settings, voicesReady });
+  });
+
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (!message || message.type !== 'NPC_YT_TEST_AUDIO') return;
+    settings = { ...settings, ...(message.settings || {}), ttsEnabled: true };
+    warmVoices();
+    speak('Audio traduzione italiano attivo.', true);
+    paintOverlay(lastCaption, lastTranslation || 'Audio traduzione italiano attivo.', 'test audio inviato');
+    sendResponse({ ok: true, voicesReady, speech: 'speechSynthesis' in window });
   });
 
   let lastUrl = location.href;
@@ -257,13 +330,16 @@
       lastUrl = location.href;
       lastCaption = '';
       lastTranslation = '';
+      lastSpoken = '';
       cache.clear();
+      stopSpeech();
       setTimeout(tick, 1200);
     }
   });
 
   async function boot() {
     await loadSettings();
+    warmVoices();
     routeObserver.observe(document.documentElement, { childList: true, subtree: true });
     if (settings.enabled) start();
     else paintOverlay('', '', 'disattivato');
